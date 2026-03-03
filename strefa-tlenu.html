@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strefa Tlenu — Komora Hiperbaryczna Kraków</title>
+    <meta name="description" content="Strefa Tlenu — łagodna komora hiperbaryczna w Krakowie. Terapia tlenowa, masaż relaksacyjny i regeneracja. Oddech, który leczy.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'oxygen': {
+                            'deep': '#1A3A4A',
+                            'deep-dark': '#0F242E',
+                            'mist': '#F0F6F8',
+                            'teal': '#4AABB8',
+                            'teal-light': '#6BC4D0',
+                            'ivory': '#FAF7F2',
+                            'moss': '#6B8F6B',
+                        }
+                    },
+                    fontFamily: {
+                        'cormorant': ['Cormorant Garamond', 'serif'],
+                        'dm-sans': ['DM Sans', 'sans-serif'],
+                        'montserrat': ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <style>
+        :root {
+            --oxygen-deep: #1A3A4A;
+            --oxygen-mist: #F0F6F8;
+            --oxygen-teal: #4AABB8;
+            --oxygen-ivory: #FAF7F2;
+            --oxygen-moss: #6B8F6B;
+        }
+        
+        * {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .font-cormorant {
+            font-family: 'Cormorant Garamond', serif;
+        }
+        
+        .font-montserrat {
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        /* Topographic background pattern */
+        .topo-bg {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 50 Q 25 30, 50 50 T 90 50' stroke='%234AABB8' stroke-width='0.3' fill='none' opacity='0.15'/%3E%3Cpath d='M10 60 Q 30 40, 55 60 T 90 60' stroke='%234AABB8' stroke-width='0.3' fill='none' opacity='0.1'/%3E%3Cpath d='M10 70 Q 35 50, 60 70 T 90 70' stroke='%234AABB8' stroke-width='0.3' fill='none' opacity='0.08'/%3E%3C/svg%3E");
+            background-size: 200px 200px;
+        }
+        
+        /* Frosted glass effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .glass-dark {
+            background: rgba(26, 58, 74, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(74, 171, 184, 0.2);
+        }
+        
+        /* Oxygen bubble radial gradient */
+        .oxygen-glow {
+            background: radial-gradient(ellipse at center, rgba(74, 171, 184, 0.15) 0%, transparent 70%);
+        }
+        
+        /* Breathing animation */
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        .breathe {
+            animation: breathe 4s ease-in-out infinite;
+        }
+        
+        /* Timeline line drawing */
+        .timeline-line {
+            stroke-dasharray: 200;
+            stroke-dashoffset: 200;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--oxygen-mist);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--oxygen-teal);
+            border-radius: 4px;
+        }
+        
+        /* Focus states for accessibility */
+        a:focus-visible, button:focus-visible {
+            outline: 2px solid var(--oxygen-teal);
+            outline-offset: 2px;
+        }
+        
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* Gallery horizontal scroll */
+        .gallery-scroll {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .gallery-scroll::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-oxygen-mist text-oxygen-deep antialiased">
+    
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+                <!-- Logo -->
+                <a href="#" class="font-cormorant text-xl md:text-2xl font-semibold text-white drop-shadow-lg">
+                    Strefa Tlenu
+                </a>
+                
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#uslugi" class="font-montserrat text-sm text-white/90 hover:text-oxygen-teal transition-colors">Usługi</a>
+                    <a href="#onas" class="font-montserrat text-sm text-white/90 hover:text-oxygen-teal transition-colors">O nas</a>
+                    <a href="#terapia" class="font-montserrat text-sm text-white/90 hover:text-oxygen-teal transition-colors">Terapia</a>
+                    <a href="#opinie" class="font-montserrat text-sm text-white/90 hover:text-oxygen-teal transition-colors">Opinie</a>
+                    <a href="#kontakt" class="font-montserrat text-sm text-white/90 hover:text-oxygen-teal transition-colors">Kontakt</a>
+                </div>
+                
+                <!-- Phone CTA -->
+                <a href="tel:+48604257862" class="hidden md:flex items-center gap-2 bg-oxygen-teal hover:bg-oxygen-teal-light text-white font-montserrat text-sm font-medium px-5 py-2.5 rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-oxygen-teal/30">
+                    <i data-lucide="phone" class="w-4 h-4"></i>
+                    +48 604 257 862
+                </a>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-white p-2" aria-label="Menu">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden glass-dark">
+            <div class="px-4 py-6 space-y-4">
+                <a href="#uslugi" class="block font-montserrat text-sm text-white/90 hover:text-oxygen-teal py-2">Usługi</a>
+                <a href="#onas" class="block font-montserrat text-sm text-white/90 hover:text-oxygen-teal py-2">O nas</a>
+                <a href="#terapia" class="block font-montserrat text-sm text-white/90 hover:text-oxygen-teal py-2">Terapia</a>
+                <a href="#opinie" class="block font-montserrat text-sm text-white/90 hover:text-oxygen-teal py-2">Opinie</a>
+                <a href="#kontakt" class="block font-montserrat text-sm text-white/90 hover:text-oxygen-teal py-2">Kontakt</a>
+                <a href="tel:+48604257862" class="flex items-center gap-2 bg-oxygen-teal text-white font-montserrat text-sm font-medium px-5 py-3 rounded-full mt-4 justify-center">
+                    <i data-lucide="phone" class="w-4 h-4"></i>
+                    +48 604 257 862
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- A. HERO -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <!-- Background Image -->
+        <div class="absolute inset-0">
+            <img 
+                src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=1920&q=80" 
+                alt="Terapia relaksacyjna" 
+                class="w-full h-full object-cover"
+            >
+            <!-- Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-b from-oxygen-deep/70 via-oxygen-deep/60 to-oxygen-deep/80"></div>
+            <!-- Oxygen glow effect -->
+            <div class="absolute inset-0 oxygen-glow"></div>
+        </div>
+        
+        <!-- Content -->
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto pt-20">
+            <h1 class="font-cormorant text-white mb-6">
+                <span id="hero-title-1" class="block text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold tracking-tight opacity-0">Strefa Tlenu</span>
+                <span id="hero-title-2" class="block text-3xl sm:text-4xl md:text-5xl font-normal text-oxygen-teal mt-2 opacity-0">Łagodna komora hiperbaryczna</span>
+            </h1>
+            <p id="hero-tagline" class="font-dm-sans text-lg sm:text-xl md:text-2xl text-white/90 italic mb-10 opacity-0">
+                Oddech, który leczy. Spokój, który odnawia.
+            </p>
+            
+            <!-- CTA Buttons -->
+            <div id="hero-ctas" class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 opacity-0">
+                <a href="tel:+48604257862" class="bg-oxygen-teal hover:bg-oxygen-teal-light text-white font-montserrat font-semibold px-8 py-4 rounded-full transition-all duration-300 hover:shadow-xl hover:shadow-oxygen-teal/30 text-lg">
+                    Umów wizytę
+                </a>
+                <a href="#onas" class="border-2 border-white/60 hover:border-white text-white font-montserrat font-medium px-8 py-4 rounded-full transition-all duration-300 hover:bg-white/10 text-lg">
+                    Dowiedz się więcej
+                </a>
+            </div>
+        </div>
+        
+        <!-- Floating Info Bar -->
+        <div id="hero-bar" class="absolute bottom-0 left-0 right-0 translate-y-full">
+            <div class="max-w-5xl mx-auto px-4 pb-6">
+                <div class="glass rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
+                    <a href="tel:+48604257862" class="flex items-center gap-3 text-white hover:text-oxygen-teal transition-colors">
+                        <i data-lucide="phone" class="w-5 h-5 text-oxygen-teal"></i>
+                        <span class="font-montserrat text-sm sm:text-base">+48 604 257 862</span>
+                    </a>
+                    <div class="hidden sm:block w-px h-6 bg-white/20"></div>
+                    <a href="https://maps.google.com/?q=Skotnicka+254+Kraków" target="_blank" rel="noopener" class="flex items-center gap-3 text-white hover:text-oxygen-teal transition-colors">
+                        <i data-lucide="map-pin" class="w-5 h-5 text-oxygen-teal"></i>
+                        <span class="font-montserrat text-sm sm:text-base">Skotnicka 254, Kraków</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- B. PHILOSOPHY STRIP -->
+    <section id="filozofia" class="bg-oxygen-ivory topo-bg py-16 md:py-24">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+                <!-- Stat 1 -->
+                <div class="philosophy-stat text-center">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-oxygen-teal/10 mb-4">
+                        <i data-lucide="wind" class="w-8 h-8 text-oxygen-teal"></i>
+                    </div>
+                    <div class="font-cormorant text-5xl md:text-6xl font-semibold text-oxygen-deep mb-2">
+                        <span class="stat-number" data-target="97">0</span>%
+                    </div>
+                    <p class="font-montserrat text-sm text-oxygen-deep/70 uppercase tracking-wider">
+                        Saturacja tlenu we krwi po sesji
+                    </p>
+                </div>
+                
+                <!-- Stat 2 -->
+                <div class="philosophy-stat text-center">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-oxygen-teal/10 mb-4">
+                        <i data-lucide="heart" class="w-8 h-8 text-oxygen-teal"></i>
+                    </div>
+                    <div class="font-cormorant text-5xl md:text-6xl font-semibold text-oxygen-deep mb-2">
+                        <span class="stat-number" data-target="60">0</span> min
+                    </div>
+                    <p class="font-montserrat text-sm text-oxygen-deep/70 uppercase tracking-wider">
+                        Standardowa sesja regeneracyjna
+                    </p>
+                </div>
+                
+                <!-- Stat 3 -->
+                <div class="philosophy-stat text-center">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-oxygen-teal/10 mb-4">
+                        <i data-lucide="zap" class="w-8 h-8 text-oxygen-teal"></i>
+                    </div>
+                    <div class="font-cormorant text-5xl md:text-6xl font-semibold text-oxygen-deep mb-2">
+                        <span class="stat-number" data-target="100">0</span>%
+                    </div>
+                    <p class="font-montserrat text-sm text-oxygen-deep/70 uppercase tracking-wider">
+                        Naturalna, łagodna metoda
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- C. ABOUT -->
+    <section id="onas" class="bg-oxygen-deep overflow-hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-2 min-h-[600px]">
+            <!-- Image -->
+            <div class="relative h-[400px] lg:h-auto overflow-hidden">
+                <div id="about-image" class="absolute inset-0 lg:clip-path-right rounded-bl-[3rem] lg:rounded-bl-none">
+                    <img 
+                        src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&q=80" 
+                        alt="Profesjonalna terapia" 
+                        class="w-full h-full object-cover"
+                        loading="lazy"
+                    >
+                </div>
+            </div>
+            
+            <!-- Text -->
+            <div id="about-text" class="flex items-center px-6 sm:px-10 lg:px-16 py-16 lg:py-20">
+                <div class="max-w-xl">
+                    <div class="w-16 h-1 bg-oxygen-teal mb-8"></div>
+                    <h2 class="font-cormorant text-3xl sm:text-4xl md:text-5xl font-semibold text-white mb-8 leading-tight">
+                        Twoje centrum regeneracji w sercu Krakowa
+                    </h2>
+                    <div class="space-y-6 text-white/80 font-dm-sans text-lg leading-relaxed">
+                        <p>
+                            Łagodna terapia tlenowa w komorze hiperbarycznej to bezpieczna, nieinwazyjna metoda regeneracji dostępna dla każdego — niezależnie od wieku. W Strefie Tlenu stawiamy na spokój, profesjonalizm i indywidualne podejście.
+                        </p>
+                        <p>
+                            Nasz gabinet przy ul. Skotnickiej 254 to przestrzeń zaprojektowana z myślą o głębokim relaksie. Dala od miejskiego zgiełku, a jednak rzut beretem od centrum Krakowa. Tu oddech staje się lekarstwem.
+                        </p>
+                    </div>
+                    <a href="#kontakt" class="inline-flex items-center gap-2 mt-10 text-oxygen-teal font-montserrat font-medium hover:text-oxygen-teal-light transition-colors group">
+                        <span>Zobacz jak do nas trafić</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- D. SERVICES GRID -->
+    <section id="uslugi" class="bg-oxygen-deep-dark topo-bg py-20 md:py-28">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="font-cormorant text-4xl md:text-5xl lg:text-6xl font-semibold text-white mb-4">
+                    Co oferujemy
+                </h2>
+                <p class="font-dm-sans text-white/60 text-lg">Kompleksowa opieka regeneracyjna</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Service 1 -->
+                <div class="service-card glass rounded-2xl p-8 hover:shadow-[0_0_40px_rgba(74,171,184,0.15)] transition-all duration-500 group">
+                    <div class="flex items-start gap-5">
+                        <div class="flex-shrink-0 w-14 h-14 rounded-full bg-oxygen-teal/20 flex items-center justify-center group-hover:bg-oxygen-teal/30 transition-colors">
+                            <i data-lucide="circle-dot" class="w-7 h-7 text-oxygen-teal"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-cormorant text-2xl font-semibold text-white mb-2">Komora Hiperbaryczna</h3>
+                            <p class="font-dm-sans text-white/70">Łagodne ciśnienie, głęboka regeneracja komórkowa i naturalne uzdrowienie organizmu.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Service 2 -->
+                <div class="service-card glass rounded-2xl p-8 hover:shadow-[0_0_40px_rgba(74,171,184,0.15)] transition-all duration-500 group">
+                    <div class="flex items-start gap-5">
+                        <div class="flex-shrink-0 w-14 h-14 rounded-full bg-oxygen-teal/20 flex items-center justify-center group-hover:bg-oxygen-teal/30 transition-colors">
+                            <i data-lucide="hand-heart" class="w-7 h-7 text-oxygen-teal"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-cormorant text-2xl font-semibold text-white mb-2">Masaż Relaksacyjny</h3>
+                            <p class="font-dm-sans text-white/70">Uwolnienie napięcia ciała i umysłu. Profesjonalne techniki dla głębokiego odprężenia.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Service 3 -->
+                <div class="service-card glass rounded-2xl p-8 hover:shadow-[0_0_40px_rgba(74,171,184,0.15)] transition-all duration-500 group">
+                    <div class="flex items-start gap-5">
+                        <div class="flex-shrink-0 w-14 h-14 rounded-full bg-oxygen-teal/20 flex items-center justify-center group-hover:bg-oxygen-teal/30 transition-colors">
+                            <i data-lucide="sparkles" class="w-7 h-7 text-oxygen-teal"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-cormorant text-2xl font-semibold text-white mb-2">Zabiegi Odnowy</h3>
+                            <p class="font-dm-sans text-white/70">Pielęgnacja skóry i tkanek z wykorzystaniem naturalnych metod i profesjonalnych produktów.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Service 4 -->
+                <div class="service-card glass rounded-2xl p-8 hover:shadow-[0_0_40px_rgba(74,171,184,0.15)] transition-all duration-500 group">
+                    <div class="flex items-start gap-5">
+                        <div class="flex-shrink-0 w-14 h-14 rounded-full bg-oxygen-teal/20 flex items-center justify-center group-hover:bg-oxygen-teal/30 transition-colors">
+                            <i data-lucide="leaf" class="w-7 h-7 text-oxygen-teal"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-cormorant text-2xl font-semibold text-white mb-2">Terapia Holistyczna</h3>
+                            <p class="font-dm-sans text-white/70">Harmonia ciała, oddechu i ducha. Podejście integrujące różne metody uzdrawiania.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- E. EXPERIENCE GALLERY -->
+    <section id="galeria" class="bg-oxygen-ivory py-20 md:py-28 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="font-cormorant text-4xl md:text-5xl font-semibold text-oxygen-deep mb-4">
+                    Poczuj Różnicę
+                </h2>
+                <p class="font-dm-sans text-oxygen-deep/60 text-lg">Przestrzeń stworzona dla Twojego oddechu</p>
+            </div>
+            
+            <div class="gallery-scroll overflow-x-auto pb-4">
+                <div id="gallery-track" class="flex gap-6 min-w-max px-4">
+                    <!-- Gallery Item 1 -->
+                    <div class="relative w-80 sm:w-96 h-[450px] flex-shrink-0 rounded-2xl overflow-hidden group">
+                        <img 
+                            src="https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=800&q=80" 
+                            alt="Zabieg spa" 
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            loading="lazy"
+                        >
+                        <div class="absolute inset-0 bg-gradient-to-t from-oxygen-deep/60 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-6 left-6">
+                            <div class="glass rounded-full px-5 py-2">
+                                <span class="font-montserrat text-sm text-white">Głęboki relaks</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gallery Item 2 -->
+                    <div class="relative w-80 sm:w-96 h-[450px] flex-shrink-0 rounded-2xl overflow-hidden group">
+                        <img 
+                            src="https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=800&q=80" 
+                            alt="Profesjonalna opieka" 
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            loading="lazy"
+                        >
+                        <div class="absolute inset-0 bg-gradient-to-t from-oxygen-deep/60 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-6 left-6">
+                            <div class="glass rounded-full px-5 py-2">
+                                <span class="font-montserrat text-sm text-white">Profesjonalna opieka</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gallery Item 3 -->
+                    <div class="relative w-72 sm:w-80 h-[450px] flex-shrink-0 rounded-2xl overflow-hidden group">
+                        <img 
+                            src="https://images.unsplash.com/photo-1493894473891-10fc1e5dbd22?w=800&q=80" 
+                            alt="Bezpieczna dla każdego" 
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            loading="lazy"
+                        >
+                        <div class="absolute inset-0 bg-gradient-to-t from-oxygen-deep/60 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-6 left-6">
+                            <div class="glass rounded-full px-5 py-2">
+                                <span class="font-montserrat text-sm text-white">Bezpieczna dla każdego</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gallery Item 4 -->
+                    <div class="relative w-80 sm:w-96 h-[450px] flex-shrink-0 rounded-2xl overflow-hidden group">
+                        <img 
+                            src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&q=80" 
+                            alt="Atmosfera spokoju" 
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            loading="lazy"
+                        >
+                        <div class="absolute inset-0 bg-gradient-to-t from-oxygen-deep/60 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-6 left-6">
+                            <div class="glass rounded-full px-5 py-2">
+                                <span class="font-montserrat text-sm text-white">Atmosfera spokoju</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- F. HOW IT WORKS -->
+    <section id="terapia" class="bg-oxygen-ivory topo-bg py-20 md:py-28">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="font-cormorant text-4xl md:text-5xl lg:text-6xl font-semibold text-oxygen-deep mb-4">
+                    Trzy kroki do odnowy
+                </h2>
+            </div>
+            
+            <!-- Timeline -->
+            <div class="relative">
+                <!-- Connection Line (Desktop) -->
+                <div class="hidden md:block absolute top-8 left-1/2 -translate-x-1/2 w-3/4 h-0.5">
+                    <svg class="w-full h-4" viewBox="0 0 400 4" preserveAspectRatio="none">
+                        <line x1="0" y1="2" x2="400" y2="2" stroke="#4AABB8" stroke-width="2" class="timeline-line" stroke-dasharray="400" stroke-dashoffset="400"/>
+                    </svg>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6">
+                    <!-- Step 1 -->
+                    <div class="timeline-step text-center relative">
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-oxygen-teal text-white mb-6 relative z-10 shadow-lg shadow-oxygen-teal/30">
+                            <i data-lucide="calendar-check" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="font-cormorant text-2xl font-semibold text-oxygen-deep mb-3">Rezerwacja</h3>
+                        <p class="font-dm-sans text-oxygen-deep/70 max-w-xs mx-auto">
+                            Zadzwoń lub napisz, dobierzemy odpowiedni pakiet dla Twoich potrzeb.
+                        </p>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div class="timeline-step text-center relative">
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-oxygen-teal text-white mb-6 relative z-10 shadow-lg shadow-oxygen-teal/30">
+                            <i data-lucide="compass" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="font-cormorant text-2xl font-semibold text-oxygen-deep mb-3">Sesja</h3>
+                        <p class="font-dm-sans text-oxygen-deep/70 max-w-xs mx-auto">
+                            Wygodnie usiądź lub połóż się w komorze. Oddychaj. To wszystko.
+                        </p>
+                    </div>
+                    
+                    <!-- Step 3 -->
+                    <div class="timeline-step text-center relative">
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-oxygen-teal text-white mb-6 relative z-10 shadow-lg shadow-oxygen-teal/30">
+                            <i data-lucide="sparkles" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="font-cormorant text-2xl font-semibold text-oxygen-deep mb-3">Regeneracja</h3>
+                        <p class="font-dm-sans text-oxygen-deep/70 max-w-xs mx-auto">
+                            Poczuj efekty już po pierwszym zabiegu. Więcej energii, lepszy sen.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pull Quote -->
+            <div class="text-center mt-16">
+                <blockquote class="font-cormorant text-2xl md:text-3xl lg:text-4xl text-oxygen-deep/80 italic">
+                    "Twoje ciało wie, czego potrzebuje."
+                </blockquote>
+            </div>
+        </div>
+    </section>
+    
+    <!-- G. TESTIMONIALS -->
+    <section id="opinie" class="relative overflow-hidden">
+        <!-- Split Background -->
+        <div class="absolute inset-0 grid grid-cols-1 md:grid-cols-2">
+            <div class="bg-oxygen-teal"></div>
+            <div class="bg-oxygen-mist"></div>
+        </div>
+        
+        <div class="relative z-10 py-20 md:py-28">
+            <div class="max-w-5xl mx-auto px-4">
+                <!-- Rating Badge -->
+                <div class="flex justify-center mb-12">
+                    <div class="glass-dark rounded-2xl px-8 py-4 flex items-center gap-4">
+                        <div class="flex gap-1">
+                            <i data-lucide="star" class="w-5 h-5 text-yellow-400 fill-yellow-400"></i>
+                            <i data-lucide="star" class="w-5 h-5 text-yellow-400 fill-yellow-400"></i>
+                            <i data-lucide="star" class="w-5 h-5 text-yellow-400 fill-yellow-400"></i>
+                            <i data-lucide="star" class="w-5 h-5 text-yellow-400 fill-yellow-400"></i>
+                            <i data-lucide="star" class="w-5 h-5 text-white/30"></i>
+                        </div>
+                        <span class="font-montserrat text-white/90 text-sm">4.0 / 5 na Google</span>
+                    </div>
+                </div>
+                
+                <!-- Testimonial Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                    <!-- Testimonial 1 -->
+                    <div class="testimonial-card bg-white rounded-2xl p-8 shadow-xl">
+                        <div class="text-oxygen-teal mb-4">
+                            <svg class="w-10 h-10" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                            </svg>
+                        </div>
+                        <p class="font-dm-sans text-oxygen-deep/80 text-lg leading-relaxed mb-6">
+                            Po kilku sesjach w komorze hiperbarycznej zauważyłam znaczną poprawę koncentracji i jakości snu. Atmosfera w Strefie Tlenu sprzyja prawdziwemu odprężeniu. Polecam każdemu, kto szuka naturalnych metod regeneracji.
+                        </p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-oxygen-teal/20 flex items-center justify-center">
+                                <span class="font-montserrat font-semibold text-oxygen-teal">AK</span>
+                            </div>
+                            <div>
+                                <p class="font-montserrat font-semibold text-oxygen-deep">Anna Kowalska</p>
+                                <div class="flex gap-0.5 mt-1">
+                                    <i data-lucide="star" class="w-4 h-4 text-oxygen-teal fill-oxygen-teal"></i>
+                                    <i data-lucide="star" class="w-4 h-4 text-oxygen-teal fill-oxygen-teal"></i>
+                                    <i data-lucide="star" class="w-4 h-4 text-oxygen-teal fill-oxygen-teal"></i>
+                                    <i data-lucide="star" class="w-4 h-4 text-oxygen-teal fill-oxygen-teal"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial 2 -->
+                    <div class="testimonial-card bg-white rounded-2xl p-8 shadow-xl md:translate-y-8">
+                        <div class="text-oxygen-teal mb-4">
+                            <svg class="w-10 h-10" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                            </svg>
+                        </div>
+                        <p class="font-dm-sans text-oxygen-deep/80 text-lg leading-relaxed mb-6">
+                            Trafiłem do Strefy Tlenu po kontuzji sportowej. Terapia tlenem przyspieszyła moją regenerację w sposób, którego nie spodziewałem się po tak łagodnej metodzie. Profesjonalna obsługa i przyjemna lokalizacja.
+                        </p>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-oxygen-moss/20 flex items-center justify-center">
+                                <span class="font-montserrat font-semibold text-oxygen-moss">MN</span>
+                            </div>
+                            <div>
+                                <p class="font-montserrat font-semibold text-oxygen-deep">Marek Nowak</p>
+                                <div class="flex gap-0.5 mt-1">
+                                    <i data-lucide="star" class="w-4 h-4 text-oxygen-teal fill-oxygen-teal"></i>
+                                    <i data-lucide="star" class="w-4 h-4 text-oxygen-teal fill-oxygen-teal"></i>
+                                    <i data-lucide="star" class="w-4 h-4 text-oxygen-teal fill-oxygen-teal"></i>
+                                    <i data-lucide="star" class="w-4 h-4 text-oxygen-teal fill-oxygen-teal"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- H. LOCATION -->
+    <section id="kontakt" class="relative py-20 md:py-28 overflow-hidden">
+        <!-- Background Image -->
+        <div class="absolute inset-0">
+            <img 
+                src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1920&q=80" 
+                alt="Lokalizacja" 
+                class="w-full h-full object-cover opacity-30"
+                loading="lazy"
+            >
+            <div class="absolute inset-0 bg-oxygen-deep/80"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-xl mx-auto px-4">
+            <div class="glass-dark rounded-3xl p-8 md:p-12 text-center">
+                <h2 class="font-cormorant text-3xl md:text-4xl font-semibold text-white mb-2">
+                    Strefa Tlenu — Kraków
+                </h2>
+                <p class="font-montserrat text-oxygen-teal mb-8">Twoja oaza regeneracji</p>
+                
+                <div class="space-y-4 mb-8">
+                    <div class="flex items-center justify-center gap-3 text-white/90">
+                        <i data-lucide="map-pin" class="w-5 h-5 text-oxygen-teal"></i>
+                        <span class="font-dm-sans">Skotnicka 254, 32-020 Kraków</span>
+                    </div>
+                    <a href="tel:+48604257862" class="flex items-center justify-center gap-3 text-white/90 hover:text-oxygen-teal transition-colors">
+                        <i data-lucide="phone" class="w-5 h-5 text-oxygen-teal"></i>
+                        <span class="font-dm-sans">+48 604 257 862</span>
+                    </a>
+                </div>
+                
+                <div class="flex items-center justify-center gap-2 text-white/70 text-sm mb-8">
+                    <i data-lucide="clock" class="w-4 h-4"></i>
+                    <span class="font-montserrat">Pon–Pt: 8:00–20:00 | Sob: 9:00–16:00</span>
+                </div>
+                
+                <a 
+                    href="https://maps.google.com/?q=Skotnicka+254+Kraków" 
+                    target="_blank" 
+                    rel="noopener" 
+                    class="inline-flex items-center gap-2 bg-oxygen-teal hover:bg-oxygen-teal-light text-white font-montserrat font-semibold px-8 py-4 rounded-full transition-all duration-300 hover:shadow-xl hover:shadow-oxygen-teal/30"
+                >
+                    <i data-lucide="navigation" class="w-5 h-5"></i>
+                    Otwórz w Google Maps
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- I. FINAL CTA -->
+    <section class="bg-oxygen-deep py-20 md:py-28">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 id="final-cta-headline" class="font-cormorant text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-white mb-6 leading-tight">
+                Zacznij oddychać pełną piersią.
+            </h2>
+            <p class="font-dm-sans text-white/70 text-lg md:text-xl mb-10">
+                Pierwsza sesja próbna dostępna już dziś.
+            </p>
+            <a 
+                href="tel:+48604257862" 
+                class="inline-flex items-center gap-3 bg-oxygen-teal hover:bg-oxygen-teal-light text-white font-montserrat font-semibold px-10 py-5 rounded-full text-lg transition-all duration-300 hover:shadow-xl hover:shadow-oxygen-teal/30 hover:scale-105"
+            >
+                <i data-lucide="phone" class="w-6 h-6"></i>
+                Zadzwoń: +48 604 257 862
+            </a>
+        </div>
+    </section>
+    
+    <!-- J. FOOTER -->
+    <footer class="bg-oxygen-deep-dark py-12">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="text-center md:text-left">
+                    <p class="font-cormorant text-2xl font-semibold text-white mb-2">Strefa Tlenu</p>
+                    <p class="font-montserrat text-xs text-white/40">© 2024 Wszystkie prawa zastrzeżone</p>
+                </div>
+                
+                <div class="flex items-center gap-6">
+                    <a href="tel:+48604257862" class="text-white/60 hover:text-oxygen-teal transition-colors">
+                        <i data-lucide="phone" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="text-white/60 hover:text-oxygen-teal transition-colors" aria-label="Instagram">
+                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="text-white/60 hover:text-oxygen-teal transition-colors" aria-label="Facebook">
+                        <i data-lucide="facebook" class="w-5 h-5"></i>
+                    </a>
+                </div>
+                
+                <div class="text-center md:text-right">
+                    <p class="font-dm-sans text-sm text-white/60">Skotnicka 254, Kraków</p>
+                    <p class="font-montserrat text-xs text-white/40">Informacja o firmie | Polityka prywatności</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Navigation scroll behavior
+        const navbar = document.getElementById('navbar');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        let menuOpen = false;
+        
+        mobileMenuBtn.addEventListener('click', function() {
+            menuOpen = !menuOpen;
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileMenuBtn.querySelector('i');
+            if (menuOpen) {
+                icon.setAttribute('data-lucide', 'x');
+            } else {
+                icon.setAttribute('data-lucide', 'menu');
+            }
+            lucide.createIcons();
+        });
+        
+        // Close mobile menu when clicking links
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function() {
+                mobileMenu.classList.add('hidden');
+                menuOpen = false;
+                const icon = mobileMenuBtn.querySelector('i');
+                icon.setAttribute('data-lucide', 'menu');
+                lucide.createIcons();
+            });
+        });
+        
+        // Navbar background on scroll
+        ScrollTrigger.create({
+            start: 'top -80',
+            onEnter: function() {
+                navbar.classList.add('glass-dark');
+                navbar.classList.remove('bg-transparent');
+            },
+            onLeaveBack: function() {
+                navbar.classList.remove('glass-dark');
+                navbar.classList.add('bg-transparent');
+            }
+        });
+        
+        // Hero animations
+        const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        
+        heroTl
+            .fromTo('#hero-title-1', 
+                { y: 60, opacity: 0 },
+                { y: 0, opacity: 1, duration: 1.2 }
+            )
+            .fromTo('#hero-title-2',
+                { y: 40, opacity: 0 },
+                { y: 0, opacity: 1, duration: 1 },
+                '-=0.6'
+            )
+            .fromTo('#hero-tagline',
+                { y: 30, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.8 },
+                '-=0.4'
+            )
+            .fromTo('#hero-ctas',
+                { y: 20, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.8 },
+                '-=0.3'
+            )
+            .to('#hero-bar',
+                { y: 0, duration: 0.8, ease: 'power2.out' },
+                '-=0.4'
+            );
+        
+        // Philosophy stats count up
+        gsap.utils.toArray('.philosophy-stat').forEach(function(stat, i) {
+            const numEl = stat.querySelector('.stat-number');
+            const target = parseInt(numEl.getAttribute('data-target'), 10);
+            
+            ScrollTrigger.create({
+                trigger: stat,
+                start: 'top 80%',
+                onEnter: function() {
+                    gsap.to(numEl, {
+                        innerHTML: target,
+                        duration: 2,
+                        ease: 'power2.out',
+                        snap: { innerHTML: 1 },
+                        overwrite: 'auto'
+                    });
+                },
+                once: true
+            });
+        });
+        
+        // About section animations
+        gsap.fromTo('#about-image',
+            { x: -100, opacity: 0 },
+            {
+                x: 0,
+                opacity: 1,
+                duration: 1.2,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: '#onas',
+                    start: 'top 60%',
+                    overwrite: 'auto'
+                }
+            }
+        );
+        
+        gsap.fromTo('#about-text',
+            { x: 100, opacity: 0 },
+            {
+                x: 0,
+                opacity: 1,
+                duration: 1.2,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: '#onas',
+                    start: 'top 60%',
+                    overwrite: 'auto'
+                }
+            }
+        );
+        
+        // Service cards stagger
+        gsap.fromTo('.service-card',
+            { y: 60, opacity: 0 },
+            {
+                y: 0,
+                opacity: 1,
+                duration: 0.8,
+                stagger: 0.15,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: '#uslugi',
+                    start: 'top 60%',
+                    overwrite: 'auto'
+                }
+            }
+        );
+        
+        // Gallery parallax
+        const galleryTrack = document.getElementById('gallery-track');
+        
+        if (galleryTrack && window.innerWidth > 768) {
+            galleryTrack.addEventListener('mousemove', function(e) {
+                const rect = galleryTrack.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                
+                gsap.to(galleryTrack.children, {
+                    x: x * -30,
+                    duration: 0.5,
+                    ease: 'power2.out',
+                    stagger: 0.05,
+                    overwrite: 'auto'
+                });
+            });
+            
+            galleryTrack.addEventListener('mouseleave', function() {
+                gsap.to(galleryTrack.children, {
+                    x: 0,
+                    duration: 0.8,
+                    ease: 'power2.out',
+                    stagger: 0.03,
+                    overwrite: 'auto'
+                });
+            });
+        }
+        
+        // Timeline animation
+        const timelineSteps = gsap.utils.toArray('.timeline-step');
+        
+        timelineSteps.forEach(function(step, i) {
+            gsap.fromTo(step,
+                { y: 40, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: '#terapia',
+                        start: 'top 60%',
+                        overwrite: 'auto'
+                    },
+                    delay: i * 0.2
+                }
+            );
+        });
+        
+        // Timeline line drawing
+        const timelineLine = document.querySelector('.timeline-line');
+        if (timelineLine) {
+            gsap.to(timelineLine, {
+                strokeDashoffset: 0,
+                duration: 1.5,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: '#terapia',
+                    start: 'top 60%',
+                    overwrite: 'auto'
+                }
+            });
+        }
+        
+        // Testimonial cards
+        gsap.fromTo('.testimonial-card',
+            { y: 60, opacity: 0 },
+            {
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                ease: 'power3.out',
+                stagger: 0.2,
+                scrollTrigger: {
+                    trigger: '#opinie',
+                    start: 'top 60%',
+                    overwrite: 'auto'
+                }
+            }
+        );
+        
+        // Final CTA breathing animation
+        const finalHeadline = document.getElementById('final-cta-headline');
+        
+        gsap.to(finalHeadline, {
+            scale: 1.02,
+            duration: 2,
+            ease: 'power1.inOut',
+            repeat: -1,
+            yoyo: true
+        });
+        
+        // Reduced motion check
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        
+        if (prefersReducedMotion.matches) {
+            gsap.globalTimeline.pause();
+            ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+        }
+    </script>
+</body>
+</html>
+```
+
+This landing page for **Strefa Tlenu** embodies the therapeutic wellness aesthetic with a sophisticated medical-spa feel. Here's what makes it special:
+
+**Design Choices:**
+- **Color palette** uses the Deep Oxygen Blue as the authoritative base with Healing Teal accents for vitality and renewal moments
+- **Typography** combines Cormorant Garamond's elegant medical gravitas with DM Sans's approachable clarity
+- **Visual texture** includes subtle topographic SVG patterns, frosted glass cards (the "hyperbaric capsule" metaphor), and radial oxygen-glow gradients
+
+**Key Interactions:**
+1. **Hero sequence** - staggered headline reveal with frosted info bar sliding up
+2. **Count-up statistics** - numbers animate when scrolled into view
+3. **Gallery parallax** - subtle mouse-responsive drift on desktop
+4. **Timeline animation** - connected dots animate sequentially with line drawing
+5. **Final CTA breathing** - subtle scale pulse mimicking respiration
+6. **Navigation** - transparent-to-frosted-glass transition on scroll
+
+**Polish Content:**
+- All text is in Polish as specified, including the tagline "Oddech, który leczy. Spokój, który odnawia."
+- Realistic testimonials with Polish names and authentic tone
+- Clear call-to-action with functional phone links
+
+**Accessibility:**
+- Semantic HTML structure
+- Focus-visible states
+- Reduced motion support
+- Proper alt text on images
+- Clickable phone `tel:` links throughout
