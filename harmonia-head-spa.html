@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmonia Head Spa — Warszawa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        forest: '#1C2420',
+                        stone: '#C9B99A',
+                        mist: '#F5F0EB',
+                        gold: '#B89A6A',
+                        smoke: '#FDFAF7'
+                    },
+                    fontFamily: {
+                        cormorant: ['Cormorant Garamond', 'serif'],
+                        inter: ['Inter', 'sans-serif'],
+                        playfair: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --forest: #1C2420;
+            --stone: #C9B99A;
+            --mist: #F5F0EB;
+            --gold: #B89A6A;
+            --smoke: #FDFAF7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--smoke);
+            color: var(--forest);
+            overflow-x: hidden;
+        }
+
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .font-cormorant {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .font-inter {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .gold-hairline {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .vignette-overlay {
+            background: linear-gradient(to top, rgba(28, 36, 32, 0.85) 0%, rgba(28, 36, 32, 0.4) 40%, transparent 100%);
+        }
+
+        .nav-frosted {
+            background: rgba(253, 250, 247, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--gold);
+        }
+
+        .card-hover {
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(184, 154, 106, 0.25);
+        }
+
+        .testimonial-text {
+            font-size: clamp(1.25rem, 3vw, 2rem);
+            line-height: 1.8;
+        }
+
+        .sepia-warm {
+            filter: sepia(0.3) saturate(1.2);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="noise-overlay"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="flex items-center justify-between h-20 lg:h-24">
+                <!-- Logo -->
+                <a href="#" class="font-cormorant text-2xl lg:text-3xl font-medium text-smoke nav-logo transition-colors duration-300">Harmonia</a>
+
+                <!-- Desktop Nav -->
+                <div class="hidden lg:flex items-center gap-12">
+                    <a href="#zabiegi" class="font-inter text-sm tracking-wider text-smoke/80 hover:text-gold transition-colors duration-300 nav-link">Zabiegi</a>
+                    <a href="#onas" class="font-inter text-sm tracking-wider text-smoke/80 hover:text-gold transition-colors duration-300 nav-link">O nas</a>
+                    <a href="#kontakt" class="font-inter text-sm tracking-wider text-smoke/80 hover:text-gold transition-colors duration-300 nav-link">Kontakt</a>
+                </div>
+
+                <!-- CTA Button -->
+                <a href="tel:+48530685887" class="hidden lg:flex items-center gap-2 px-6 py-3 border border-gold text-gold hover:bg-gold hover:text-forest font-inter text-sm tracking-wider transition-all duration-300 rounded-full nav-cta">
+                    Umów wizytę
+                </a>
+
+                <!-- Mobile Menu Toggle -->
+                <button id="menuToggle" class="lg:hidden text-smoke p-2" aria-label="Menu">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu fixed inset-0 z-[60] bg-forest">
+        <div class="flex flex-col items-center justify-center h-full gap-8">
+            <button id="closeMenu" class="absolute top-6 right-6 text-smoke" aria-label="Zamknij menu">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <a href="#zabiegi" class="font-cormorant text-3xl text-smoke hover:text-gold transition-colors">Zabiegi</a>
+            <a href="#onas" class="font-cormorant text-3xl text-smoke hover:text-gold transition-colors">O nas</a>
+            <a href="#kontakt" class="font-cormorant text-3xl text-smoke hover:text-gold transition-colors">Kontakt</a>
+            <a href="tel:+48530685887" class="mt-8 px-8 py-4 border border-gold text-gold font-inter text-sm tracking-wider transition-all duration-300 rounded-full">
+                Umów wizytę
+            </a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative h-screen min-h-[700px] overflow-hidden">
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=1920&q=85" 
+                 alt="Kobieta podczas zabiegu head spa" 
+                 class="w-full h-full object-cover object-center"
+                 loading="eager">
+            <div class="vignette-overlay absolute inset-0"></div>
+        </div>
+
+        <div class="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center">
+            <span class="hero-element font-inter text-xs lg:text-sm tracking-[0.3em] text-stone uppercase mb-6 opacity-0">
+                Head Spa · Warszawa
+            </span>
+            <h1 class="hero-element font-cormorant text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-smoke leading-tight mb-8 opacity-0" style="text-shadow: 0 4px 30px rgba(28,36,32,0.5);">
+                <span class="block">Twój umysł zasługuje</span>
+                <span class="block font-light italic">na ciszę.</span>
+            </h1>
+            <p class="hero-element font-inter text-sm lg:text-base text-stone/90 max-w-xl mb-12 opacity-0">
+                Rytuały pielęgnacji głowy i skóry w sercu Warszawy.
+            </p>
+            <a href="tel:+48530685887" class="hero-element opacity-0 inline-flex items-center gap-2 px-8 py-4 border-2 border-gold text-gold hover:bg-gold hover:text-forest font-inter text-sm tracking-wider transition-all duration-500 rounded-full group">
+                <span>Umów wizytę</span>
+                <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+            </a>
+        </div>
+
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+            <div class="w-px h-16 bg-gradient-to-b from-transparent via-gold to-transparent opacity-50"></div>
+        </div>
+    </section>
+
+    <!-- Ritual Intro Section -->
+    <section id="onas" class="py-24 lg:py-32 bg-mist relative overflow-hidden">
+        <div class="gold-hairline w-full absolute top-0"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                <!-- Image -->
+                <div class="reveal-image relative order-2 lg:order-1">
+                    <div class="relative overflow-hidden rounded-t-[3rem] border-2 border-stone/30 shadow-2xl">
+                        <img src="https://images.unsplash.com/photo-1515377905703?w=800&q=85" 
+                             alt="Naturalne produkty do pielęgnacji" 
+                             class="w-full aspect-[3/4] object-cover"
+                             loading="lazy">
+                    </div>
+                    <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-gold/10 rounded-full blur-3xl"></div>
+                </div>
+
+                <!-- Text -->
+                <div class="reveal-text order-1 lg:order-2">
+                    <div class="w-16 h-px bg-gold mb-8"></div>
+                    <blockquote class="font-cormorant text-2xl lg:text-3xl xl:text-4xl text-forest/90 italic leading-relaxed mb-8">
+                        "Skóra głowy to fundament pięknych włosów i spokojnego umysłu."
+                    </blockquote>
+                    <div class="space-y-6 font-inter text-forest/75 leading-relaxed">
+                        <p>
+                            Head Spa to japoński rytuał pielęgnacji, który łączy głębokie oczyszczanie skóry głowy z relaksującym masażem. To moment wytchnienia dla Twojego umysłu i niezbędny rytuał dla zdrowia Twoich włosów.
+                        </p>
+                        <p>
+                            W Harmonia każdy zabieg zaczynamy od szczegółowej konsultacji. Dobieramy składniki i techniki dopasowane do unikalnych potrzeb Twojej skóry głowy — ponieważ każda z nas zasługuje na indywidualne podejście.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Zabieg Showcase -->
+    <section id="zabiegi" class="py-24 lg:py-32 bg-smoke relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="text-center mb-16 lg:mb-20">
+                <span class="reveal-up font-inter text-xs tracking-[0.3em] text-gold uppercase mb-4 block">Nasze Rytuały</span>
+                <h2 class="reveal-up font-cormorant text-3xl lg:text-5xl xl:text-6xl text-forest">
+                    Wybierz swoją ścieżkę
+                </h2>
+            </div>
+
+            <!-- Cards -->
+            <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+                <!-- Card 1 -->
+                <article class="card-reveal card-hover group bg-mist rounded-2xl overflow-hidden border border-stone/20">
+                    <div class="relative aspect-[3/4] overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1630595633877?w=600&q=85" 
+                             alt="Rytuał Oczyszczający" 
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                             loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-forest/60 via-transparent to-transparent"></div>
+                        <span class="absolute top-4 left-4 font-cormorant text-6xl text-stone/30">01</span>
+                    </div>
+                    <div class="p-6 lg:p-8">
+                        <h3 class="font-cormorant text-xl lg:text-2xl font-semibold text-forest mb-3">Rytuał Oczyszczający</h3>
+                        <p class="font-inter text-sm text-forest/70 line-clamp-2 mb-4">
+                            Głębokie oczyszczenie skóry głowy z nagromadzonych toksyn i sebum.
+                        </p>
+                        <a href="#kontakt" class="inline-flex items-center gap-2 font-inter text-sm text-gold hover:text-stone transition-colors group/link">
+                            <span>Dowiedz się więcej</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover/link:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Card 2 -->
+                <article class="card-reveal card-hover group bg-mist rounded-2xl overflow-hidden border border-stone/20">
+                    <div class="relative aspect-[3/4] overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1559185590-765cdc663325?w=600&q=85" 
+                             alt="Masaż Relaksacyjny" 
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                             loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-forest/60 via-transparent to-transparent"></div>
+                        <span class="absolute top-4 left-4 font-cormorant text-6xl text-stone/30">02</span>
+                    </div>
+                    <div class="p-6 lg:p-8">
+                        <h3 class="font-cormorant text-xl lg:text-2xl font-semibold text-forest mb-3">Masaż Relaksacyjny</h3>
+                        <p class="font-inter text-sm text-forest/70 line-clamp-2 mb-4">
+                            Techniki masażu redukujące napięcie i pobudzające mikrokrążenie.
+                        </p>
+                        <a href="#kontakt" class="inline-flex items-center gap-2 font-inter text-sm text-gold hover:text-stone transition-colors group/link">
+                            <span>Dowiedz się więcej</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover/link:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Card 3 -->
+                <article class="card-reveal card-hover group bg-mist rounded-2xl overflow-hidden border border-stone/20">
+                    <div class="relative aspect-[3/4] overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1650044252595?w=600&q=85" 
+                             alt="Rytuał Odżywczy" 
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                             loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-forest/60 via-transparent to-transparent"></div>
+                        <span class="absolute top-4 left-4 font-cormorant text-6xl text-stone/30">03</span>
+                    </div>
+                    <div class="p-6 lg:p-8">
+                        <h3 class="font-cormorant text-xl lg:text-2xl font-semibold text-forest mb-3">Rytuał Odżywczy</h3>
+                        <p class="font-inter text-sm text-forest/70 line-clamp-2 mb-4">
+                            Intensywna kuracja wzmacniająca cebulki włosów i przywracająca blask.
+                        </p>
+                        <a href="#kontakt" class="inline-flex items-center gap-2 font-inter text-sm text-gold hover:text-stone transition-colors group/link">
+                            <span>Dowiedz się więcej</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover/link:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Strip -->
+    <section class="relative h-[60vh] min-h-[400px] overflow-hidden">
+        <div class="parallax-bg absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1630595632518?w=1920&q=85" 
+                 alt="Doświadczenie head spa" 
+                 class="w-full h-[120%] object-cover"
+                 loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-r from-forest/90 via-forest/70 to-forest/90"></div>
+        </div>
+
+        <div class="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
+            <div class="reveal-up">
+                <span class="font-cormorant text-6xl lg:text-8xl text-gold">5 / 5</span>
+            </div>
+            <div class="reveal-up mt-4">
+                <span class="font-inter text-sm tracking-[0.2em] text-stone/80 uppercase">
+                    19 opinii · 100% zadowolonych klientek
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filozofia Section -->
+    <section class="py-24 lg:py-32 bg-smoke relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+                <!-- Decorative Numbers -->
+                <div class="lg:col-span-3 reveal-left">
+                    <div class="font-cormorant text-[8rem] lg:text-[12rem] font-light leading-none text-gold/15 select-none">
+                        01<br>02<br>03
+                    </div>
+                </div>
+
+                <!-- Benefits -->
+                <div class="lg:col-span-8 lg:col-start-5 space-y-12">
+                    <div class="reveal-right">
+                        <div class="w-16 h-px bg-gold mb-6"></div>
+                        <h3 class="font-cormorant text-2xl lg:text-3xl text-forest mb-3">Indywidualne podejście</h3>
+                        <p class="font-inter text-forest/70 leading-relaxed">
+                            Każdy zabieg rozpoczynamy od konsultacji, aby dopasować rytuał do unikalnych potrzeb Twojej skóry głowy i włosów.
+                        </p>
+                    </div>
+
+                    <div class="gold-hairline"></div>
+
+                    <div class="reveal-right">
+                        <h3 class="font-cormorant text-2xl lg:text-3xl text-forest mb-3">Sprawdzone składniki</h3>
+                        <p class="font-inter text-forest/70 leading-relaxed">
+                            Wykorzystujemy naturalne oleje i serum najwyższej jakości — delikatne dla skóry, potężne w działaniu.
+                        </p>
+                    </div>
+
+                    <div class="gold-hairline"></div>
+
+                    <div class="reveal-right">
+                        <h3 class="font-cormorant text-2xl lg:text-3xl text-forest mb-3">Doświadczenie i spokój</h3>
+                        <p class="font-inter text-forest/70 leading-relaxed">
+                            Przestrzeń stworzona, by odciąć się od miasta. Moment wytchnienia, na który zasługujesz.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-24 lg:py-32 bg-forest relative overflow-hidden">
+        <!-- Background texture -->
+        <div class="absolute inset-0 opacity-[0.03]">
+            <img src="https://images.unsplash.com/photo-1600334089648?w=1200&q=85" 
+                 alt="" 
+                 class="w-full h-full object-cover blur-xl"
+                 loading="lazy"
+                 aria-hidden="true">
+        </div>
+
+        <div class="max-w-4xl mx-auto px-6 lg:px-12 relative z-10">
+            <div class="text-center mb-12">
+                <span class="font-inter text-xs tracking-[0.3em] text-gold uppercase mb-4 block">Głosy Klientek</span>
+            </div>
+
+            <div id="testimonialContainer" class="relative min-h-[200px]">
+                <div class="testimonial-slide absolute inset-0 flex flex-col items-center justify-center text-center">
+                    <p class="font-playfair testimonial-text text-stone/90 italic mb-8">
+                        "To było jak odcięcie się od całego świata. Wyszłam z poczuciem, że moje włosy oddychają, a umysł jest czysty."
+                    </p>
+                    <span class="font-inter text-sm text-gold tracking-wider">— Anna M.</span>
+                </div>
+                <div class="testimonial-slide absolute inset-0 flex flex-col items-center justify-center text-center opacity-0">
+                    <p class="font-playfair testimonial-text text-stone/90 italic mb-8">
+                        "Masaż głowy był niesamowity. Poczułam, jak całe napięcie z tyłu głowy po prostu znika. Cudowne doświadczenie."
+                    </p>
+                    <span class="font-inter text-sm text-gold tracking-wider">— Marta K.</span>
+                </div>
+                <div class="testimonial-slide absolute inset-0 flex flex-col items-center justify-center text-center opacity-0">
+                    <p class="font-playfair testimonial-text text-stone/90 italic mb-8">
+                        "Już trzy razy byłam i za każdym razem wychodzę z sensem głębokiego spokoju. To nie jest zwykły zabieg."
+                    </p>
+                    <span class="font-inter text-sm text-gold tracking-wider">— Katarzyna W.</span>
+                </div>
+            </div>
+
+            <!-- Dots Navigation -->
+            <div class="flex justify-center gap-3 mt-12">
+                <button class="testimonial-dot w-2 h-2 rounded-full bg-gold transition-all duration-300" data-index="0" aria-label="Testimonial 1"></button>
+                <button class="testimonial-dot w-2 h-2 rounded-full bg-stone/30 hover:bg-gold/70 transition-all duration-300" data-index="1" aria-label="Testimonial 2"></button>
+                <button class="testimonial-dot w-2 h-2 rounded-full bg-stone/30 hover:bg-gold/70 transition-all duration-300" data-index="2" aria-label="Testimonial 3"></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking CTA -->
+    <section class="grid lg:grid-cols-2 min-h-[500px]">
+        <!-- Left - CTA -->
+        <div class="bg-gold flex flex-col items-center justify-center px-8 py-16 lg:py-24 text-center">
+            <h2 class="cta-reveal font-cormorant text-3xl lg:text-4xl xl:text-5xl text-forest mb-6 leading-tight">
+                Zarezerwuj<br>swój rytuał
+            </h2>
+            <a href="tel:+48530685887" 
+               class="cta-reveal inline-flex items-center gap-2 px-8 py-4 bg-forest text-smoke font-inter text-sm tracking-wider hover:bg-forest/90 transition-all duration-300 rounded-full mb-6">
+                Umów wizytę
+            </a>
+            <a href="tel:+48530685887" 
+               class="cta-reveal inline-flex items-center gap-3 font-inter text-sm text-forest/80 hover:text-forest transition-colors">
+                <i data-lucide="phone" class="w-4 h-4"></i>
+                <span>+48 530 685 887</span>
+            </a>
+        </div>
+
+        <!-- Right - Image -->
+        <div class="relative overflow-hidden order-first lg:order-last min-h-[300px] lg:min-h-0">
+            <img src="https://images.unsplash.com/photo-1591343395082?w=1000&q=85" 
+                 alt="Moments of care" 
+                 class="w-full h-full object-cover sepia-warm"
+                 loading="lazy">
+            <div class="absolute inset-0 bg-gold/10 mix-blend-overlay"></div>
+        </div>
+    </section>
+
+    <!-- Location & Contact -->
+    <section id="kontakt" class="py-24 lg:py-32 bg-mist relative">
+        <div class="max-w-5xl mx-auto px-6 lg:px-12">
+            <div class="border border-gold/30 rounded-2xl overflow-hidden">
+                <div class="gold-hairline"></div>
+                
+                <div class="grid lg:grid-cols-2 gap-12 p-8 lg:p-12">
+                    <!-- Address -->
+                    <div class="space-y-6">
+                        <h3 class="font-cormorant text-2xl lg:text-3xl text-forest mb-4">Lokalizacja</h3>
+                        <div class="flex items-start gap-4">
+                            <i data-lucide="map-pin" class="w-5 h-5 text-gold flex-shrink-0 mt-1"></i>
+                            <div>
+                                <p class="font-inter text-forest/80">
+                                    Puławska 107C/4<br>
+                                    02-595 Warszawa
+                                </p>
+                            </div>
+                        </div>
+                        <a href="https://www.google.com/maps/search/Pu%C5%82awska+107C+02-595+Warszawa" 
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="inline-flex items-center gap-2 px-6 py-3 border border-gold text-gold hover:bg-gold hover:text-forest font-inter text-sm tracking-wider transition-all duration-300 rounded-full">
+                            <span>Znajdź nas</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+
+                    <!-- Contact Card -->
+                    <div class="space-y-6">
+                        <h3 class="font-cormorant text-2xl lg:text-3xl text-forest mb-4">Kontakt</h3>
+                        <div class="flex items-center gap-4">
+                            <i data-lucide="phone" class="w-5 h-5 text-gold flex-shrink-0"></i>
+                            <a href="tel:+48530685887" class="font-inter text-forest/80 hover:text-gold transition-colors">
+                                +48 530 685 887
+                            </a>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <i data-lucide="clock" class="w-5 h-5 text-gold flex-shrink-0 mt-1"></i>
+                            <div class="font-inter text-forest/80 text-sm">
+                                <p>Poniedziałek — Piątek: 10:00 — 20:00</p>
+                                <p>Sobota: 10:00 — 16:00</p>
+                                <p>Niedziela: Zamknięte</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gold-hairline"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-forest py-16 relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 text-center">
+            <div class="font-cormorant text-3xl lg:text-4xl text-smoke mb-8">Harmonia</div>
+            
+            <div class="gold-hairline w-32 mx-auto mb-8"></div>
+            
+            <div class="flex flex-col items-center gap-4 font-inter text-xs tracking-[0.2em] text-stone/60 uppercase">
+                <a href="tel:+48530685887" class="hover:text-gold transition-colors">+48 530 685 887</a>
+                <span class="text-gold/30">·</span>
+                <span>Warszawa</span>
+                <span class="text-gold/30">·</span>
+                <span>Head Spa</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize GSAP
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Mobile menu
+        const menuToggle = document.getElementById('menuToggle');
+        const closeMenu = document.getElementById('closeMenu');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.add('open');
+        });
+
+        closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.remove('open');
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+            });
+        });
+
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        const navLogo = navbar.querySelector('.nav-logo');
+        const navLinks = navbar.querySelectorAll('.nav-link');
+        const navCta = navbar.querySelector('.nav-cta');
+
+        ScrollTrigger.create({
+            start: 'top -80',
+            end: 'bottom top',
+            onUpdate: (self) => {
+                if (self.direction === 1 && self.progress > 0) {
+                    navbar.classList.add('nav-frosted');
+                    navLogo.classList.remove('text-smoke');
+                    navLogo.classList.add('text-forest');
+                    navLinks.forEach(link => {
+                        link.classList.remove('text-smoke/80');
+                        link.classList.add('text-forest/80');
+                    });
+                    navCta.classList.remove('text-gold', 'border-gold');
+                    navCta.classList.add('text-forest', 'border-forest', 'hover:bg-forest', 'hover:text-smoke');
+                } else if (self.progress === 0) {
+                    navbar.classList.remove('nav-frosted');
+                    navLogo.classList.add('text-smoke');
+                    navLogo.classList.remove('text-forest');
+                    navLinks.forEach(link => {
+                        link.classList.add('text-smoke/80');
+                        link.classList.remove('text-forest/80');
+                    });
+                    navCta.classList.add('text-gold', 'border-gold');
+                    navCta.classList.remove('text-forest', 'border-forest', 'hover:bg-forest', 'hover:text-smoke');
+                }
+            }
+        });
+
+        // Check reduced motion preference
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (!prefersReducedMotion) {
+            // Hero animations
+            gsap.fromTo('.hero-element', 
+                { opacity: 0, y: 40 },
+                { 
+                    opacity: 1, 
+                    y: 0, 
+                    duration: 1, 
+                    stagger: 0.15,
+                    ease: 'power2.out',
+                    delay: 0.3
+                }
+            );
+
+            // Section reveals
+            gsap.fromTo('.reveal-up',
+                { opacity: 0, y: 30 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    stagger: 0.1,
+                    scrollTrigger: {
+                        trigger: '.reveal-up',
+                        start: 'top 85%',
+                        toggleActions: 'play none none none'
+                    }
+                }
+            );
+
+            // Image slide from left
+            gsap.fromTo('.reveal-image',
+                { opacity: 0, x: -60 },
+                {
+                    opacity: 1,
+                    x: 0,
+                    duration: 1,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: '.reveal-image',
+                        start: 'top 80%',
+                        toggleActions: 'play none none none'
+                    }
+                }
+            );
+
+            // Text slide from right
+            gsap.fromTo('.reveal-text',
+                { opacity: 0, x: 60 },
+                {
+                    opacity: 1,
+                    x: 0,
+                    duration: 1,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: '.reveal-text',
+                        start: 'top 80%',
+                        toggleActions: 'play none none none'
+                    }
+                }
+            );
+
+            // Card stagger
+            gsap.fromTo('.card-reveal',
+                { opacity: 0, y: 50 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    stagger: 0.15,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: '.card-reveal',
+                        start: 'top 85%',
+                        toggleActions: 'play none none none'
+                    }
+                }
+            );
+
+            // Parallax background
+            gsap.fromTo('.parallax-bg img',
+                { y: 0 },
+                {
+                    y: -100,
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: '.parallax-bg',
+                        start: 'top bottom',
+                        end: 'bottom top',
+                        scrub: 1
+                    }
+                }
+            );
+
+            // Left reveal
+            gsap.fromTo('.reveal-left',
+                { opacity: 0, x: -40 },
+                {
+                    opacity: 1,
+                    x: 0,
+                    duration: 1,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: '.reveal-left',
+                        start: 'top 80%',
+                        toggleActions: 'play none none none'
+                    }
+                }
+            );
+
+            // Right reveals stagger
+            gsap.fromTo('.reveal-right',
+                { opacity: 0, x: 40 },
+                {
+                    opacity: 1,
+                    x: 0,
+                    duration: 0.8,
+                    stagger: 0.2,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: '.reveal-right',
+                        start: 'top 85%',
+                        toggleActions: 'play none none none'
+                    }
+                }
+            );
+
+            // CTA reveal
+            gsap.fromTo('.cta-reveal',
+                { opacity: 0, y: 30 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    stagger: 0.15,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: '.cta-reveal',
+                        start: 'top 85%',
+                        toggleActions: 'play none none none'
+                    }
+                }
+            );
+
+            // Testimonial cycling
+            const testimonials = document.querySelectorAll('.testimonial-slide');
+            const dots = document.querySelectorAll('.testimonial-dot');
+            let currentSlide = 0;
+
+            function showSlide(index) {
+                testimonials.forEach((slide, i) => {
+                    if (i === index) {
+                        gsap.to(slide, { opacity: 1, duration: 0.5, ease: 'power2.out' });
+                    } else {
+                        gsap.to(slide, { opacity: 0, duration: 0.5, ease: 'power2.out' });
+                    }
+                });
+
+                dots.forEach((dot, i) => {
+                    if (i === index) {
+                        dot.classList.add('bg-gold');
+                        dot.classList.remove('bg-stone/30');
+                    } else {
+                        dot.classList.remove('bg-gold');
+                        dot.classList.add('bg-stone/30');
+                    }
+                });
+            }
+
+            dots.forEach((dot, i) => {
+                dot.addEventListener('click', () => {
+                    currentSlide = i;
+                    showSlide(currentSlide);
+                });
+            });
+
+            // Auto-cycle testimonials
+            setInterval(() => {
+                currentSlide = (currentSlide + 1) % testimonials.length;
+                showSlide(currentSlide);
+            }, 5000);
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: prefersReducedMotion ? 'auto' : 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
