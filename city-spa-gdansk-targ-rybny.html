@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City SPA Gdańsk Targ Rybny | Masaż & SPA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Jost:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'charcoal': '#1C1A17',
+                        'amber': '#C8914A',
+                        'cream': '#F0EBE1',
+                        'sage': '#8A9E8C',
+                        'frosted': '#FAF8F4'
+                    },
+                    fontFamily: {
+                        'cormorant': ['Cormorant Garamond', 'serif'],
+                        'jost': ['Jost', 'sans-serif'],
+                        'playfair': ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        html { scroll-behavior: smooth; }
+        body { overflow-x: hidden; }
+        
+        .noise-overlay::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.035;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        
+        .sepia-tint {
+            filter: sepia(0.12) saturate(0.95);
+            transition: filter 0.5s ease;
+        }
+        .sepia-tint:hover {
+            filter: sepia(0.05) saturate(1.05);
+        }
+        
+        .arched-top {
+            clip-path: ellipse(120% 100% at 50% 100%);
+            border-radius: 100% 100% 0 0 / 45% 45% 0 0;
+        }
+        
+        .amber-glow {
+            box-shadow: 0 0 60px rgba(200, 145, 74, 0.25), inset 0 0 30px rgba(200, 145, 74, 0.1);
+        }
+        
+        .frosted-glass {
+            background: rgba(28, 26, 23, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        
+        .nav-frosted {
+            background: rgba(28, 26, 23, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .gradient-left {
+            background: linear-gradient(90deg, #1C1A17 0%, #1C1A17 50%, rgba(28, 26, 23, 0.6) 70%, transparent 100%);
+        }
+        
+        .quote-mark {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 5rem;
+            line-height: 1;
+            color: #C8914A;
+            opacity: 0.6;
+        }
+        
+        .service-card {
+            background: linear-gradient(180deg, #252320 0%, #1C1A17 100%);
+            border-top: 2px solid #C8914A;
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body class="noise-overlay font-jost text-cream bg-charcoal antialiased">
+    
+    <!-- NAVIGATION -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4 lg:py-5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
+            <div class="flex flex-col">
+                <span class="font-cormorant text-2xl lg:text-3xl font-medium text-frosted tracking-wide">City SPA</span>
+                <span class="font-jost text-[10px] lg:text-xs text-cream/50 tracking-[0.2em] uppercase -mt-1">Gdańsk · Targ Rybny</span>
+            </div>
+            <div class="flex items-center gap-6 lg:gap-10">
+                <a href="#uslugi" class="hidden sm:block font-jost text-sm text-cream/70 hover:text-amber transition-colors">Usługi</a>
+                <a href="#kontakt" class="hidden sm:block font-jost text-sm text-cream/70 hover:text-amber transition-colors">Kontakt</a>
+                <a href="tel:+48514205887" class="px-5 py-2.5 bg-amber text-charcoal font-jost text-sm font-medium rounded-full hover:bg-amber/90 transition-all shadow-lg shadow-amber/20">
+                    Rezerwuj
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- HERO -->
+    <section id="hero" class="relative h-screen min-h-[700px] overflow-hidden">
+        <div class="absolute inset-0">
+            <img src="https://images.unsplash.com/photo-1544161515-4ab6466a0bc9?w=1920&q=85" 
+                 alt="Masaż pleców" 
+                 class="w-full h-full object-cover sepia-tint"
+                 loading="eager">
+        </div>
+        <div class="absolute inset-0 gradient-left"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-transparent to-transparent"></div>
+        
+        <div class="relative z-10 h-full flex flex-col justify-center px-6 lg:px-20 max-w-3xl">
+            <h1 class="font-cormorant font-medium leading-[0.95]">
+                <span class="hero-word block text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-frosted opacity-0 translate-y-8">Twoje miejsce</span>
+                <span class="hero-word block text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-amber opacity-0 translate-y-8">spokoju.</span>
+            </h1>
+            <p class="hero-fade mt-6 lg:mt-8 font-jost font-light text-lg sm:text-xl text-cream/70 max-w-md opacity-0 translate-y-6">
+                Masaż & SPA w historycznym Targu Rybnym.
+            </p>
+            <div class="hero-fade mt-8 lg:mt-10 opacity-0 translate-y-6">
+                <a href="tel:+48514205887" class="inline-flex items-center gap-2 px-8 py-4 bg-amber text-charcoal font-jost font-medium rounded-full hover:bg-amber/90 transition-all shadow-xl shadow-amber/30">
+                    Zarezerwuj wizytę
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Rating Badge -->
+        <div class="rating-badge absolute bottom-8 left-6 lg:left-20 px-5 py-3 frosted-glass rounded-full flex items-center gap-3 opacity-0 -translate-x-12">
+            <div class="flex items-center gap-1">
+                <svg class="w-5 h-5 text-amber fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <span class="font-jost font-semibold text-frosted">4.8 / 5</span>
+            </div>
+            <span class="font-jost text-xs text-cream/50">(18 opinii)</span>
+        </div>
+    </section>
+    
+    <!-- MOOD STRIP -->
+    <section id="mood-strip" class="py-20 lg:py-28 bg-charcoal overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="flex flex-col lg:flex-row gap-8 lg:gap-6 justify-center">
+                <div class="mood-card flex-1 max-w-xs mx-auto lg:mx-0 group">
+                    <div class="relative overflow-hidden rounded-t-[45%] h-[400px] lg:h-[500px]">
+                        <img src="https://images.unsplash.com/photo-1600334129128-685c558bcfd6?w=600&q=80" 
+                             alt="Relaks" 
+                             class="w-full h-full object-cover sepia-tint scale-100 group-hover:scale-105 transition-transform duration-700"
+                             loading="lazy">
+                    </div>
+                    <p class="font-playfair italic text-xl text-center text-amber mt-5">Relaks.</p>
+                </div>
+                <div class="mood-card flex-1 max-w-xs mx-auto lg:mx-0 group">
+                    <div class="relative overflow-hidden rounded-t-[45%] h-[400px] lg:h-[500px]">
+                        <img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=600&q=80" 
+                             alt="Odnowa" 
+                             class="w-full h-full object-cover sepia-tint scale-100 group-hover:scale-105 transition-transform duration-700"
+                             loading="lazy">
+                    </div>
+                    <p class="font-playfair italic text-xl text-center text-amber mt-5">Odnowa.</p>
+                </div>
+                <div class="mood-card flex-1 max-w-xs mx-auto lg:mx-0 group">
+                    <div class="relative overflow-hidden rounded-t-[45%] h-[400px] lg:h-[500px]">
+                        <img src="https://images.unsplash.com/photo-1540555700478-4be289fbebc6?w=600&q=80" 
+                             alt="Harmonia" 
+                             class="w-full h-full object-cover sepia-tint scale-100 group-hover:scale-105 transition-transform duration-700"
+                             loading="lazy">
+                    </div>
+                    <p class="font-playfair italic text-xl text-center text-amber mt-5">Harmonia.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- O NAS -->
+    <section id="onas" class="py-20 lg:py-32 bg-charcoal">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                <div class="onas-image relative">
+                    <div class="relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1560750588-71707a58d551?w=900&q=85" 
+                             alt="Wnętrze SPA" 
+                             class="w-full h-[500px] lg:h-[600px] object-cover sepia-tint"
+                             loading="lazy">
+                        <div class="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-charcoal/50 to-transparent"></div>
+                    </div>
+                </div>
+                <div class="lg:pl-6">
+                    <span class="font-playfair italic text-amber text-lg">O nas</span>
+                    <h2 class="font-cormorant text-4xl sm:text-5xl lg:text-6xl text-frosted mt-3 leading-tight">
+                        Nie jesteśmy kolejnym salonem.
+                    </h2>
+                    <div class="w-16 h-[1px] bg-amber my-8"></div>
+                    <p class="font-jost font-light text-lg text-cream/70 leading-relaxed">
+                        Znajdujemy się w sercu historycznego Gdańska, przy Targu Rybnym 10A. To miejsce, gdzie stara architektura spotyka się z nowoczesnym podejściem do relaksacji. Nasze masaże i rytuały SPA to nie tylko zabiegi — to pełne doświadczenie zmysłów, które przeniesie Cię w stan głębokiego spokoju.
+                    </p>
+                    
+                    <div class="grid sm:grid-cols-3 gap-6 mt-10">
+                        <div class="flex items-start gap-3">
+                            <i data-lucide="map-pin" class="w-5 h-5 text-amber flex-shrink-0 mt-1"></i>
+                            <div>
+                                <span class="block font-jost text-sm text-cream/50">Adres</span>
+                                <span class="font-jost text-frosted text-sm">Targ Rybny 10A</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i data-lucide="star" class="w-5 h-5 text-amber flex-shrink-0 mt-1"></i>
+                            <div>
+                                <span class="block font-jost text-sm text-cream/50">Ocena</span>
+                                <span class="font-jost text-frosted text-sm">4.8 / 5</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <a href="tel:+48514205887" class="flex items-start gap-3 group">
+                                <i data-lucide="phone" class="w-5 h-5 text-amber flex-shrink-0 mt-1"></i>
+                                <div>
+                                    <span class="block font-jost text-sm text-cream/50">Telefon</span>
+                                    <span class="font-jost text-frosted text-sm group-hover:text-amber transition-colors">+48 514 205 887</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- USŁUGI -->
+    <section id="uslugi" class="py-20 lg:py-32 bg-cream">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="text-center mb-14 lg:mb-20">
+                <h2 class="font-cormorant text-4xl sm:text-5xl lg:text-6xl text-charcoal">Czego potrzebujesz dziś?</h2>
+                <p class="font-playfair italic text-amber text-xl mt-4">Wybierz swój rytuał.</p>
+            </div>
+            
+            <div class="grid sm:grid-cols-2 gap-6 lg:gap-8">
+                <!-- Card 1 -->
+                <article class="service-card rounded-2xl p-8 lg:p-10 transition-transform duration-500 hover:-translate-y-2">
+                    <div class="w-14 h-14 rounded-full bg-amber/10 flex items-center justify-center mb-6">
+                        <i data-lucide="hand" class="w-7 h-7 text-amber"></i>
+                    </div>
+                    <h3 class="font-cormorant text-2xl lg:text-3xl text-frosted mb-3">Masaż Klasyczny</h3>
+                    <p class="font-jost font-light text-cream/60 mb-6">Głęboki relaks mięśni i odprężenie całego ciała.</p>
+                    <a href="#kontakt" class="inline-flex items-center gap-2 font-jost text-sm text-amber hover:text-amber/80 transition-colors group">
+                        Dowiedz się więcej
+                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </article>
+                
+                <!-- Card 2 -->
+                <article class="service-card rounded-2xl p-8 lg:p-10 transition-transform duration-500 hover:-translate-y-2">
+                    <div class="w-14 h-14 rounded-full bg-amber/10 flex items-center justify-center mb-6">
+                        <svg class="w-7 h-7 text-amber" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="8" cy="6" r="3"/>
+                            <circle cx="16" cy="10" r="3"/>
+                            <circle cx="12" cy="18" r="3"/>
+                            <path d="M8 9v6M16 13v-3M12 15v-3"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-cormorant text-2xl lg:text-3xl text-frosted mb-3">Masaż Gorącymi Kamieniami</h3>
+                    <p class="font-jost font-light text-cream/60 mb-6">Ciepło wulkanicznych kamieni rozluźnia napięcie.</p>
+                    <a href="#kontakt" class="inline-flex items-center gap-2 font-jost text-sm text-amber hover:text-amber/80 transition-colors group">
+                        Dowiedz się więcej
+                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </article>
+                
+                <!-- Card 3 -->
+                <article class="service-card rounded-2xl p-8 lg:p-10 transition-transform duration-500 hover:-translate-y-2">
+                    <div class="w-14 h-14 rounded-full bg-amber/10 flex items-center justify-center mb-6">
+                        <i data-lucide="heart" class="w-7 h-7 text-amber"></i>
+                    </div>
+                    <h3 class="font-cormorant text-2xl lg:text-3xl text-frosted mb-3">Rytuał SPA dla Par</h3>
+                    <p class="font-jost font-light text-cream/60 mb-6">Wyjątkowy czas dla dwojga w atmosferze spokoju.</p>
+                    <a href="#kontakt" class="inline-flex items-center gap-2 font-jost text-sm text-amber hover:text-amber/80 transition-colors group">
+                        Dowiedz się więcej
+                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </article>
+                
+                <!-- Card 4 -->
+                <article class="service-card rounded-2xl p-8 lg:p-10 transition-transform duration-500 hover:-translate-y-2">
+                    <div class="w-14 h-14 rounded-full bg-amber/10 flex items-center justify-center mb-6">
+                        <i data-lucide="flower-2" class="w-7 h-7 text-amber"></i>
+                    </div>
+                    <h3 class="font-cormorant text-2xl lg:text-3xl text-frosted mb-3">Masaż Aromaterapeutyczny</h3>
+                    <p class="font-jost font-light text-cream/60 mb-6">Harmonia zmysłów z naturalnymi olejkami.</p>
+                    <a href="#kontakt" class="inline-flex items-center gap-2 font-jost text-sm text-amber hover:text-amber/80 transition-colors group">
+                        Dowiedz się więcej
+                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                </article>
+            </div>
+        </div>
+    </section>
+    
+    <!-- PRZESTRZEŃ -->
+    <section id="przestrzen" class="py-20 lg:py-32 bg-charcoal relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="grid lg:grid-cols-2 gap-4 lg:gap-6 items-end mb-12">
+                <div class="przestrzen-img overflow-hidden rounded-2xl h-[350px] lg:h-[480px]">
+                    <img src="https://images.unsplash.com/photo-1600334089648-b0d9d30c27d3?w=900&q=85" 
+                         alt="Sauna" 
+                         class="w-full h-full object-cover sepia-tint hover:scale-105 transition-transform duration-700"
+                         loading="lazy">
+                </div>
+                <div class="przestrzen-img overflow-hidden rounded-2xl h-[280px] lg:h-[400px]">
+                    <img src="https://images.unsplash.com/photo-1540555700478-4be289fbebc6?w=900&q=85" 
+                         alt="Strefa relaksu" 
+                         class="w-full h-full object-cover sepia-tint hover:scale-105 transition-transform duration-700"
+                         loading="lazy">
+                </div>
+            </div>
+            <div class="text-center max-w-2xl mx-auto">
+                <h2 class="font-cormorant text-4xl sm:text-5xl lg:text-6xl text-frosted leading-tight">
+                    Przestrzeń stworzona dla ciszy.
+                </h2>
+                <p class="font-jost font-light text-lg text-cream/60 mt-6 leading-relaxed">
+                    Nasze wnętrze to połączenie ciepłego drewna, miękkiego światła i absolutnej prywatności. Każdy detal został zaprojektowany z myślą o Twoim odprężeniu w sercu starego miasta.
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- OPINIE -->
+    <section id="opinie" class="py-20 lg:py-32 bg-cream">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="text-center mb-14 lg:mb-20">
+                <span class="font-cormorant text-5xl sm:text-6xl lg:text-7xl text-amber">4.8</span>
+                <span class="font-cormorant text-3xl sm:text-4xl text-charcoal/30"> na 5 gwiazdek</span>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+                <!-- Review 1 -->
+                <article class="review-card bg-white/50 rounded-2xl p-8 lg:p-10 shadow-sm">
+                    <span class="quote-mark">"</span>
+                    <p class="font-jost italic text-charcoal/80 text-lg leading-relaxed -mt-4">
+                        Niezwykłe miejsce w samym centrum Gdańska. Masaż był perfekcyjny, a atmosfera przeniosła mnie w inny świat. Polecam każdemu, kto szuka prawdziwego relaksu.
+                    </p>
+                    <div class="flex items-center gap-1 mt-6">
+                        <i data-lucide="star" class="w-4 h-4 text-amber fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-amber fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-amber fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-amber fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-amber fill-current"></i>
+                    </div>
+                    <span class="block font-jost text-sm text-charcoal/50 mt-3">— Anna K.</span>
+                </article>
+                
+                <!-- Review 2 -->
+                <article class="review-card bg-white/50 rounded-2xl p-8 lg:p-10 shadow-sm">
+                    <span class="quote-mark">"</span>
+                    <p class="font-jost italic text-charcoal/80 text-lg leading-relaxed -mt-4">
+                        Byłem na masażu gorącymi kamieniami i to było jedno z najlepszych doświadczeń SPA w moim życiu. Profesjonalna obsługa i piękne wnętrze. Na pewno wrócę.
+                    </p>
+                    <div class="flex items-center gap-1 mt-6">
+                        <i data-lucide="star" class="w-4 h-4 text-amber fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-amber fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-amber fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-amber fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-amber fill-current"></i>
+                    </div>
+                    <span class="block font-jost text-sm text-charcoal/50 mt-3">— Marek W.</span>
+                </article>
+                
+                <!-- Review 3 -->
+                <article class="review-card bg-white/50 rounded-2xl p-8 lg:p-10 shadow-sm">
+                    <span class="quote-mark">"</span>
+                    <p class="font-jost italic text-charcoal/80 text-lg leading-relaxed -mt-4">
+                        Z moją żoną wybraliśmy rytuał dla par i byliśmy zachwyceni. Intymna atmosfera, wspaniali masażyści i niesamowite wrażenia. To nasze nowe ulubione miejsce.
+                    </p>
+                    <div class="flex items-center gap-1 mt-6">
+                        <i data-lucide="star" class="w-4 h-4 text-amber fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-amber fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-amber fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-amber fill-current"></i>
+                        <i data-lucide="star" class="w-4 h-4 text-amber fill-current"></i>
+                    </div>
+                    <span class="block font-jost text-sm text-charcoal/50 mt-3">— Piotr i Ewa</span>
+                </article>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="https://www.google.com/maps/place/City+SPA+Gda%C5%84sk+Targ+Rybny" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   class="inline-flex items-center gap-2 font-jost text-amber hover:text-amber/80 transition-colors border-b border-amber/50 pb-1">
+                    Zobacz wszystkie opinie w Google
+                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- GALERIA -->
+    <section id="galeria" class="py-20 lg:py-32 bg-charcoal">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <h2 class="font-cormorant text-4xl sm:text-5xl text-frosted text-center mb-4">Atmosfera</h2>
+            <p class="font-playfair italic text-amber text-center mb-12">Odkryj przestrzeń spokoju.</p>
+            
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+                <div class="gallery-item overflow-hidden rounded-xl h-[250px] lg:h-[350px] lg:col-span-2 lg:row-span-2 lg:h-auto">
+                    <img src="https://images.unsplash.com/photo-1600334129128-685c558bcfd6?w=800&q=80" 
+                         alt="Galeria SPA" 
+                         class="w-full h-full object-cover sepia-tint hover:scale-105 transition-transform duration-700"
+                         loading="lazy">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-xl h-[200px] lg:h-[250px]">
+                    <img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=500&q=80" 
+                         alt="Galeria SPA" 
+                         class="w-full h-full object-cover sepia-tint hover:scale-105 transition-transform duration-700"
+                         loading="lazy">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-xl h-[200px] lg:h-[250px]">
+                    <img src="https://images.unsplash.com/photo-1560750588-71707a58d551?w=500&q=80" 
+                         alt="Galeria SPA" 
+                         class="w-full h-full object-cover sepia-tint hover:scale-105 transition-transform duration-700"
+                         loading="lazy">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-xl h-[200px] lg:h-[250px]">
+                    <img src="https://images.unsplash.com/photo-1544161515-4ab6466a0bc9?w=500&q=80" 
+                         alt="Galeria SPA" 
+                         class="w-full h-full object-cover sepia-tint hover:scale-105 transition-transform duration-700"
+                         loading="lazy">
+                </div>
+                <div class="gallery-item overflow-hidden rounded-xl h-[200px] lg:h-[250px]">
+                    <img src="https://images.unsplash.com/photo-1600334089648-b0d9d30c27d3?w=500&q=80" 
+                         alt="Galeria SPA" 
+                         class="w-full h-full object-cover sepia-tint hover:scale-105 transition-transform duration-700"
+                         loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- KONTAKT -->
+    <section id="kontakt" class="py-20 lg:py-32 bg-charcoal relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                <div>
+                    <h2 class="font-cormorant text-4xl sm:text-5xl lg:text-6xl text-frosted leading-tight">
+                        Jesteśmy gotowi.
+                    </h2>
+                    <p class="font-jost font-light text-cream/60 text-lg mt-6">
+                        Zadzwoń i zarezerwuj swój czas relaksacji w sercu Gdańska.
+                    </p>
+                    
+                    <div class="mt-10 space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-amber/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="map-pin" class="w-5 h-5 text-amber"></i>
+                            </div>
+                            <div>
+                                <span class="block font-jost text-sm text-cream/50">Adres</span>
+                                <span class="font-jost text-frosted">Targ Rybny 10A, 80-838 Gdańsk</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-amber/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="phone" class="w-5 h-5 text-amber"></i>
+                            </div>
+                            <div>
+                                <span class="block font-jost text-sm text-cream/50">Telefon</span>
+                                <a href="tel:+48514205887" class="font-jost text-frosted hover:text-amber transition-colors">+48 514 205 887</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-10 flex flex-col sm:flex-row items-start gap-4">
+                        <a href="tel:+48514205887" 
+                           class="inline-flex items-center gap-3 px-8 py-4 bg-amber text-charcoal font-jost font-medium rounded-full hover:bg-amber/90 transition-all shadow-xl shadow-amber/30">
+                            Zadzwoń i zarezerwuj
+                            <i data-lucide="phone" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://www.google.com/maps/place/City+SPA+Gda%C5%84sk+Targ+Rybny" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="inline-flex items-center gap-2 font-jost text-amber hover:text-amber/80 transition-colors py-4">
+                            Zobacz na mapie
+                            <i data-lucide="external-link" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <div class="relative overflow-hidden rounded-t-[45%] border-2 border-amber/20 amber-glow">
+                        <img src="https://images.unsplash.com/photo-1540555700478-4be289fbebc6?w=800&q=85" 
+                             alt="Wnętrze SPA" 
+                             class="w-full h-[400px] lg:h-[500px] object-cover sepia-tint"
+                             loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- FOOTER -->
+    <footer class="py-10 lg:py-12 bg-charcoal border-t border-cream/10">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
+                <div class="text-center lg:text-left">
+                    <span class="font-cormorant text-xl text-frosted/80">City SPA</span>
+                    <span class="font-jost text-sm text-cream/40 ml-2">· Gdańsk Targ Rybny</span>
+                </div>
+                
+                <div class="w-24 h-[1px] bg-amber/50 hidden lg:block"></div>
+                
+                <a href="tel:+48514205887" class="font-jost text-cream/60 hover:text-amber transition-colors">
+                    +48 514 205 887
+                </a>
+            </div>
+            
+            <div class="mt-8 pt-6 border-t border-cream/5 text-center">
+                <p class="font-jost text-xs text-cream/30">
+                    © 2025 City SPA Gdańsk. Wszelkie prawa zastrzeżone.
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        let lastScroll = 0;
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 50) {
+                navbar.classList.add('nav-frosted');
+                navbar.classList.remove('py-4', 'lg:py-5');
+                navbar.classList.add('py-3', 'lg:py-4');
+            } else {
+                navbar.classList.remove('nav-frosted');
+                navbar.classList.remove('py-3', 'lg:py-4');
+                navbar.classList.add('py-4', 'lg:py-5');
+            }
+            
+            lastScroll = currentScroll;
+        });
+        
+        // Hero animations
+        const heroWords = gsap.utils.toArray('.hero-word');
+        heroWords.forEach((word, i) => {
+            gsap.fromTo(word, 
+                { opacity: 0, y: 60 },
+                { opacity: 1, y: 0, duration: 1.2, delay: 0.3 + (i * 0.2), ease: 'power3.out' }
+            );
+        });
+        
+        gsap.fromTo('.hero-fade', 
+            { opacity: 0, y: 40 },
+            { opacity: 1, y: 0, duration: 1, delay: 0.8, stagger: 0.15, ease: 'power2.out' }
+        );
+        
+        // Rating badge animation
+        gsap.fromTo('.rating-badge',
+            { opacity: 0, x: -50 },
+            { opacity: 1, x: 0, duration: 1, delay: 1.2, ease: 'power2.out' }
+        );
+        
+        // Mood strip cards
+        gsap.fromTo('.mood-card',
+            { opacity: 0, y: 80 },
+            { 
+                opacity: 1, 
+                y: 0, 
+                duration: 0.8, 
+                stagger: 0.2,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: '#mood-strip',
+                    start: 'top 70%',
+                    toggleActions: 'play none none reverse'
+                }
+            }
+        );
+        
+        // O nas image
+        gsap.fromTo('.onas-image',
+            { opacity: 0, x: -60 },
+            { 
+                opacity: 1, 
+                x: 0, 
+                duration: 1,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: '#onas',
+                    start: 'top 60%',
+                    toggleActions: 'play none none reverse'
+                }
+            }
+        );
+        
+        // Service cards - fan in from bottom
+        const serviceCards = gsap.utils.toArray('.service-card');
+        serviceCards.forEach((card, i) => {
+            gsap.fromTo(card,
+                { opacity: 0, y: 100, rotateX: 10 },
+                { 
+                    opacity: 1, 
+                    y: 0, 
+                    rotateX: 0,
+                    duration: 0.8,
+                    delay: i * 0.1,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: '#uslugi',
+                        start: 'top 60%',
+                        toggleActions: 'play none none reverse'
+                    }
+                }
+            );
+        });
+        
+        // Przestrzeń images
+        gsap.fromTo('.przestrzen-img',
+            { opacity: 0, scale: 0.9 },
+            { 
+                opacity: 1, 
+                scale: 1, 
+                duration: 1, 
+                stagger: 0.15,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: '#przestrzen',
+                    start: 'top 60%',
+                    toggleActions: 'play none none reverse'
+                }
+            }
+        );
+        
+        // Review cards
+        gsap.fromTo('.review-card',
+            { opacity: 0, y: 50 },
+            { 
+                opacity: 1, 
+                y: 0, 
+                duration: 0.7, 
+                stagger: 0.15,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: '#opinie',
+                    start: 'top 60%',
+                    toggleActions: 'play none none reverse'
+                }
+            }
+        );
+        
+        // Gallery items
+        gsap.fromTo('.gallery-item',
+            { opacity: 0, scale: 0.95 },
+            { 
+                opacity: 1, 
+                scale: 1, 
+                duration: 0.6, 
+                stagger: 0.1,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: '#galeria',
+                    start: 'top 65%',
+                    toggleActions: 'play none none reverse'
+                }
+            }
+        );
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Respect reduced motion
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            gsap.globalTimeline.timeScale(0);
+        }
+    </script>
+</body>
+</html>
