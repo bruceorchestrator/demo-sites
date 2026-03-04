@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Infrastructure Proposal — AFFX Academy | ChangesWithAI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { 'inter': ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            dark: { 50: '#1a1b21', 100: '#15161b', 200: '#111217', 300: '#0d0e12' },
+            accent: { 400: '#34d399', 500: '#10b981', 600: '#059669', 700: '#047857' },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .glow-border { box-shadow: 0 0 30px rgba(16, 185, 129, 0.15), inset 0 0 30px rgba(16, 185, 129, 0.05); }
+    .glow-badge { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+    .timeline-bar { background: linear-gradient(90deg, #10b981 0%, #34d399 100%); }
+    .module-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .module-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+    .fade-in { opacity: 0; transform: translateY(30px); }
+
+    @media print {
+      * { color: #111 !important; background: white !important; border-color: #ddd !important; box-shadow: none !important; }
+      body { background: white !important; font-size: 11pt; }
+      .no-print { display: none !important; }
+      .module-card, .glow-border { border: 1px solid #ddd !important; }
+      .fade-in { opacity: 1 !important; transform: none !important; }
+      section { page-break-inside: avoid; }
+      .timeline-bar { background: #10b981 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body class="bg-dark-300 text-gray-200 font-inter antialiased">
+
+  <!-- HEADER -->
+  <header class="min-h-[70vh] flex items-center justify-center relative overflow-hidden">
+    <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 1px, transparent 0); background-size: 40px 40px;"></div>
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-accent-500/5 rounded-full blur-[120px]"></div>
+    <div class="relative z-10 text-center px-6 max-w-3xl mx-auto" id="header-content">
+      <p class="text-accent-500 font-semibold tracking-widest uppercase text-sm mb-6">ChangesWithAI</p>
+      <h1 class="text-5xl md:text-7xl font-bold text-white mb-4 leading-tight">AI Infrastructure<br>Proposal</h1>
+      <div class="w-16 h-1 bg-accent-500 mx-auto my-8 rounded-full"></div>
+      <p class="text-2xl md:text-3xl text-gray-400 font-light mb-3">Для <span class="text-white font-semibold">AFFX Academy</span></p>
+      <p class="text-gray-500 text-lg mt-6">Март 2026</p>
+      <p class="text-gray-600 text-sm mt-2">Автоматизация продаж и контента с помощью AI</p>
+    </div>
+  </header>
+
+  <!-- EXECUTIVE SUMMARY -->
+  <section class="max-w-4xl mx-auto px-6 py-20">
+    <div class="fade-in">
+      <p class="text-accent-500 font-semibold tracking-widest uppercase text-xs mb-4">Executive Summary</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-12">Проблема и решение</h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6 mb-16">
+      <div class="fade-in bg-dark-50/50 border border-red-900/30 rounded-2xl p-6">
+        <div class="text-red-400 text-sm font-semibold uppercase tracking-wider mb-4">Текущие проблемы</div>
+        <ul class="space-y-4 text-gray-300">
+          <li class="flex gap-3">
+            <span class="text-red-400 text-xl mt-0.5">01</span>
+            <div><span class="text-white font-semibold">4,000 лидов</span> с вебинара &rarr; ~20 конверсий <span class="text-red-400 font-semibold">(0.5%)</span></div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-red-400 text-xl mt-0.5">02</span>
+            <div><span class="text-white font-semibold">7,000 лидов</span> в TG-боте &mdash; <span class="text-red-400">без единого follow-up</span></div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-red-400 text-xl mt-0.5">03</span>
+            <div><span class="text-white font-semibold">SEO = 0.</span> Nuxt SPA невидим для Google. Органика уходит конкурентам</div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-red-400 text-xl mt-0.5">04</span>
+            <div>TikTok: <span class="text-red-400 font-semibold">6 месяцев</span> без результата</div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-red-400 text-xl mt-0.5">05</span>
+            <div>3 сильных ментора &mdash; выходит <span class="text-red-400">2-3 поста в неделю</span></div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="fade-in bg-dark-50/50 border border-accent-700/30 rounded-2xl p-6">
+        <div class="text-accent-400 text-sm font-semibold uppercase tracking-wider mb-4">Решение</div>
+        <p class="text-gray-300 mb-6 leading-relaxed">4 AI-модуля. Каждый решает конкретную проблему в воронке продаж и контента.</p>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3 text-white">
+            <div class="w-8 h-8 rounded-lg bg-accent-500/10 flex items-center justify-center text-accent-400 text-sm font-bold">x3</div>
+            <span>Конверсия из лида в оплату</span>
+          </div>
+          <div class="flex items-center gap-3 text-white">
+            <div class="w-8 h-8 rounded-lg bg-accent-500/10 flex items-center justify-center text-accent-400 text-sm font-bold">24/7</div>
+            <span>Обработка лидов без задержек</span>
+          </div>
+          <div class="flex items-center gap-3 text-white">
+            <div class="w-8 h-8 rounded-lg bg-accent-500/10 flex items-center justify-center text-accent-400 text-sm font-bold">x7</div>
+            <span>Контент без найма команды</span>
+          </div>
+          <div class="flex items-center gap-3 text-white">
+            <div class="w-8 h-8 rounded-lg bg-accent-500/10 flex items-center justify-center text-accent-400 text-sm font-bold">SEO</div>
+            <span>Органический трафик с нуля</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODULES -->
+  <section class="max-w-5xl mx-auto px-6 py-20">
+    <div class="fade-in text-center mb-16">
+      <p class="text-accent-500 font-semibold tracking-widest uppercase text-xs mb-4">Scope of Work</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-white">4 модуля</h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Module 1 -->
+      <div class="fade-in module-card bg-dark-50 border border-gray-800/50 rounded-2xl p-8">
+        <div class="flex items-center justify-between mb-6">
+          <span class="text-3xl">🤖</span>
+          <span class="text-xs font-semibold px-3 py-1 rounded-full bg-accent-500/10 text-accent-400 border border-accent-500/20">2 недели</span>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-1">Module 1: AI Sales Agent</h3>
+        <p class="text-accent-400 font-bold text-2xl mb-4">$2,000</p>
+        <p class="text-gray-400 text-sm mb-5 leading-relaxed">Telegram бот-квалификатор &mdash; мгновенная обработка входящих лидов 24/7. Контекстный диалог: определяет уровень, интересы, бюджет. Автоматический handoff на менеджера для оплат.</p>
+        <div class="border-t border-gray-800/50 pt-4 mb-4">
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Deliverables</p>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li class="flex gap-2"><span class="text-accent-500">&#10003;</span> Работающий Telegram бот</li>
+            <li class="flex gap-2"><span class="text-accent-500">&#10003;</span> Интеграция с CRM</li>
+            <li class="flex gap-2"><span class="text-accent-500">&#10003;</span> Сценарий диалогов</li>
+            <li class="flex gap-2"><span class="text-accent-500">&#10003;</span> Дашборд метрик</li>
+          </ul>
+        </div>
+        <div class="bg-dark-200 rounded-xl px-4 py-3">
+          <p class="text-xs text-gray-500 uppercase tracking-wider mb-2">Ценность</p>
+          <p class="text-white text-sm leading-relaxed">7,000 лидов сейчас без ответа. Если бот конвертирует хотя бы <span class="text-accent-400 font-semibold">1% из них</span> &mdash; это 70 продаж. При среднем чеке курса &mdash; <span class="text-accent-400 font-semibold">окупается в первый месяц</span>.</p>
+          <p class="text-gray-500 text-xs mt-2">Замена: наём менеджера на обработку лидов ~$800-1,200/мес</p>
+        </div>
+      </div>
+
+      <!-- Module 2 -->
+      <div class="fade-in module-card bg-dark-50 border border-gray-800/50 rounded-2xl p-8">
+        <div class="flex items-center justify-between mb-6">
+          <span class="text-3xl">🎯</span>
+          <span class="text-xs font-semibold px-3 py-1 rounded-full bg-accent-500/10 text-accent-400 border border-accent-500/20">2-3 недели</span>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-1">Module 2: AI Nurturing System</h3>
+        <p class="text-accent-400 font-bold text-2xl mb-4">$1,500</p>
+        <p class="text-gray-400 text-sm mb-5 leading-relaxed">Behavior-driven follow-up: автоматические касания на основе действий лида. 3-4 касания за 2-3 дня. Сегментация: записался но не пришёл / был но не купил / начал но бросил.</p>
+        <div class="border-t border-gray-800/50 pt-4 mb-4">
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Deliverables</p>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li class="flex gap-2"><span class="text-accent-500">&#10003;</span> Nurturing flows для каждого сегмента</li>
+            <li class="flex gap-2"><span class="text-accent-500">&#10003;</span> Аналитика open/click/conversion</li>
+            <li class="flex gap-2"><span class="text-accent-500">&#10003;</span> Шаблоны сообщений</li>
+            <li class="flex gap-2"><span class="text-accent-500">&#10003;</span> A/B тестирование</li>
+          </ul>
+        </div>
+        <div class="bg-dark-200 rounded-xl px-4 py-3">
+          <p class="text-xs text-gray-500 uppercase tracking-wider mb-2">Ценность</p>
+          <p class="text-white text-sm leading-relaxed">4,000 лидов с вебинара &rarr; 20 оплат (0.5%). С nurturing конверсия растёт до <span class="text-accent-400 font-semibold">1.5-2%</span> &mdash; это <span class="text-accent-400 font-semibold">60-80 оплат</span> вместо 20. x3 выручка с каждого вебинара.</p>
+          <p class="text-gray-500 text-xs mt-2">Экономия: ~40 часов/мес ручных follow-up менеджерами</p>
+        </div>
+      </div>
+
+      <!-- Module 3 -->
+      <div class="fade-in module-card bg-dark-50 border border-gray-800/50 rounded-2xl p-8">
+        <div class="flex items-center justify-between mb-6">
+          <span class="text-3xl">🎬</span>
+          <span class="text-xs font-semibold px-3 py-1 rounded-full bg-accent-500/10 text-accent-400 border border-accent-500/20">3-4 недели</span>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-1">Module 3: AI Content Machine</h3>
+        <p class="text-accent-400 font-bold text-2xl mb-4">$1,500</p>
+        <p class="text-gray-400 text-sm mb-5 leading-relaxed">Один вебинар (1.5ч) &rarr; 20-30 единиц контента автоматически. Reels скрипты, карусели, TG посты, SEO-статьи. Programmatic video с субтитрами и брендингом.</p>
+        <div class="border-t border-gray-800/50 pt-4 mb-4">
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Deliverables</p>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li class="flex gap-2"><span class="text-accent-500">&#10003;</span> Контент-пайплайн</li>
+            <li class="flex gap-2"><span class="text-accent-500">&#10003;</span> Первые 50 единиц контента</li>
+            <li class="flex gap-2"><span class="text-accent-500">&#10003;</span> Шаблоны по форматам</li>
+            <li class="flex gap-2"><span class="text-accent-500">&#10003;</span> Видео-генерация (Reels)</li>
+          </ul>
+        </div>
+        <div class="bg-dark-200 rounded-xl px-4 py-3">
+          <p class="text-xs text-gray-500 uppercase tracking-wider mb-2">Ценность</p>
+          <p class="text-white text-sm leading-relaxed">Сейчас 2-3 поста/нед, с AI &mdash; <span class="text-accent-400 font-semibold">15-20/нед</span>. Контент-менеджер + копирайтер = $1,500-2,000/мес. AI делает <span class="text-accent-400 font-semibold">x5 больше за $0</span> операционных расходов.</p>
+          <p class="text-gray-500 text-xs mt-2">Экономия: ~$1,500/мес на контент-команду</p>
+        </div>
+      </div>
+
+      <!-- Module 4 -->
+      <div class="fade-in module-card bg-dark-50 border border-gray-800/50 rounded-2xl p-8">
+        <div class="flex items-center justify-between mb-6">
+          <span class="text-3xl">🔍</span>
+          <span class="text-xs font-semibold px-3 py-1 rounded-full bg-accent-500/10 text-accent-400 border border-accent-500/20">4 недели</span>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-1">Module 4: SEO Infrastructure</h3>
+        <p class="text-accent-400 font-bold text-2xl mb-4">$1,200</p>
+        <p class="text-gray-400 text-sm mb-5 leading-relaxed">SSR migration для Nuxt (чтобы Google видел сайт). AI-генерация SEO-статей из вебинаров. Internal linking + CTA на курс в каждой статье.</p>
+        <div class="border-t border-gray-800/50 pt-4 mb-4">
+          <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Deliverables</p>
+          <ul class="space-y-2 text-sm text-gray-400">
+            <li class="flex gap-2"><span class="text-accent-500">&#10003;</span> SSR migration</li>
+            <li class="flex gap-2"><span class="text-accent-500">&#10003;</span> 20 SEO-оптимизированных статей</li>
+            <li class="flex gap-2"><span class="text-accent-500">&#10003;</span> Keyword strategy</li>
+            <li class="flex gap-2"><span class="text-accent-500">&#10003;</span> Meta tags + internal linking</li>
+          </ul>
+        </div>
+        <div class="bg-dark-200 rounded-xl px-4 py-3">
+          <p class="text-xs text-gray-500 uppercase tracking-wider mb-2">Ценность</p>
+          <p class="text-white text-sm leading-relaxed">Сейчас 0 органического трафика. Каждая SEO-статья = входная точка в воронку. <span class="text-accent-400 font-semibold">20 статей</span> за 4 недели &mdash; через 3-4 мес это <span class="text-accent-400 font-semibold">бесплатный трафик навсегда</span>.</p>
+          <p class="text-gray-500 text-xs mt-2">Замена: SEO-агентство $1,000-2,000/мес + копирайтер $500-800/мес</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING TABLE -->
+  <section class="max-w-4xl mx-auto px-6 py-20">
+    <div class="fade-in text-center mb-12">
+      <p class="text-accent-500 font-semibold tracking-widest uppercase text-xs mb-4">Pricing</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-white">Стоимость</h2>
+    </div>
+
+    <div class="fade-in overflow-x-auto">
+      <table class="w-full text-left">
+        <thead>
+          <tr class="border-b border-gray-800">
+            <th class="py-4 px-4 text-gray-500 text-xs font-semibold uppercase tracking-wider">Модуль</th>
+            <th class="py-4 px-4 text-gray-500 text-xs font-semibold uppercase tracking-wider text-right">Разработка (фикс)</th>
+          </tr>
+        </thead>
+        <tbody class="text-sm">
+          <tr class="border-b border-gray-800/50">
+            <td class="py-4 px-4 text-gray-300">Module 1: AI Sales Agent</td>
+            <td class="py-4 px-4 text-white font-semibold text-right">$2,000</td>
+          </tr>
+          <tr class="border-b border-gray-800/50">
+            <td class="py-4 px-4 text-gray-300">Module 2: AI Nurturing</td>
+            <td class="py-4 px-4 text-white font-semibold text-right">$1,500</td>
+          </tr>
+          <tr class="border-b border-gray-800/50">
+            <td class="py-4 px-4 text-gray-300">Module 3: AI Content Machine</td>
+            <td class="py-4 px-4 text-white font-semibold text-right">$1,500</td>
+          </tr>
+          <tr class="border-b border-gray-800/50">
+            <td class="py-4 px-4 text-gray-300">Module 4: SEO Infrastructure</td>
+            <td class="py-4 px-4 text-white font-semibold text-right">$1,200</td>
+          </tr>
+          <tr class="bg-accent-500/5 border border-accent-500/20 rounded-xl">
+            <td class="py-5 px-4 text-white font-bold">Все 4 модуля <span class="text-accent-400 text-xs font-semibold ml-2 px-2 py-0.5 bg-accent-500/10 rounded-full">-15%</span></td>
+            <td class="py-5 px-4 text-accent-400 font-bold text-2xl text-right">$5,270</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="fade-in mt-8 bg-dark-50 border border-gray-800/50 rounded-xl p-6">
+      <div class="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <p class="text-white font-semibold">Ретейнер: поддержка всех модулей</p>
+          <p class="text-gray-500 text-sm mt-1">Мониторинг, баг-фиксы, оптимизация, новые фичи, еженедельные отчёты</p>
+        </div>
+        <p class="text-accent-400 font-bold text-2xl">$300/мес</p>
+      </div>
+    </div>
+
+    <p class="text-gray-500 text-sm mt-6 text-center">Каждый модуль можно заказать отдельно. Скидка 15% при заказе всех четырёх.</p>
+  </section>
+
+  <!-- RECOMMENDED START -->
+  <section class="max-w-4xl mx-auto px-6 py-20">
+    <div class="fade-in glow-border rounded-2xl border border-accent-500/30 bg-dark-50 p-10 md:p-14 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-accent-500/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2"></div>
+      <div class="relative z-10">
+        <span class="glow-badge inline-block text-xs font-bold px-4 py-1.5 rounded-full bg-accent-500/10 text-accent-400 border border-accent-500/30 mb-6 uppercase tracking-widest">Рекомендация</span>
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">С чего начать?</h2>
+        <div class="space-y-4 text-gray-300 leading-relaxed">
+          <p>Рекомендуем: <strong class="text-white">Module 1 (AI Sales Agent)</strong> &mdash; самый быстрый ROI.</p>
+          <p><span class="text-accent-400 font-semibold">2 недели</span> до первого результата. Сразу видно: сколько лидов обработано, время ответа, конверсия.</p>
+          <div class="bg-dark-200 rounded-xl px-6 py-4 border border-accent-500/10 mt-6">
+            <p class="text-white font-semibold mb-1">Money-back guarantee</p>
+            <p class="text-gray-400 text-sm">Если бот не приносит измеримый результат &mdash; полный возврат оплаты.</p>
+          </div>
+          <p class="text-gray-400 text-sm mt-4">После успешного Module 1 &rarr; масштабируем на остальные модули.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section class="max-w-4xl mx-auto px-6 py-20">
+    <div class="fade-in text-center mb-14">
+      <p class="text-accent-500 font-semibold tracking-widest uppercase text-xs mb-4">Roadmap</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-white">8 недель до полной инфраструктуры</h2>
+    </div>
+
+    <div class="fade-in space-y-6">
+      <!-- Week labels -->
+      <div class="hidden md:flex justify-between text-xs text-gray-600 px-2 mb-2">
+        <span>Week 1</span><span>Week 2</span><span>Week 3</span><span>Week 4</span><span>Week 5</span><span>Week 6</span><span>Week 7</span><span>Week 8</span>
+      </div>
+
+      <!-- Module 1: weeks 1-2 -->
+      <div class="flex items-center gap-4">
+        <div class="w-36 md:w-44 text-right shrink-0">
+          <p class="text-white font-semibold text-sm">Sales Agent</p>
+          <p class="text-gray-600 text-xs">Week 1-2</p>
+        </div>
+        <div class="flex-1 relative h-10 bg-dark-50 rounded-lg overflow-hidden">
+          <div class="timeline-bar absolute left-0 top-0 h-full rounded-lg" style="width: 25%;"></div>
+        </div>
+      </div>
+
+      <!-- Module 2: weeks 2-4 -->
+      <div class="flex items-center gap-4">
+        <div class="w-36 md:w-44 text-right shrink-0">
+          <p class="text-white font-semibold text-sm">Nurturing</p>
+          <p class="text-gray-600 text-xs">Week 2-4</p>
+        </div>
+        <div class="flex-1 relative h-10 bg-dark-50 rounded-lg overflow-hidden">
+          <div class="timeline-bar absolute top-0 h-full rounded-lg" style="left: 12.5%; width: 25%;"></div>
+        </div>
+      </div>
+
+      <!-- Module 3: weeks 3-6 -->
+      <div class="flex items-center gap-4">
+        <div class="w-36 md:w-44 text-right shrink-0">
+          <p class="text-white font-semibold text-sm">Content Machine</p>
+          <p class="text-gray-600 text-xs">Week 3-6</p>
+        </div>
+        <div class="flex-1 relative h-10 bg-dark-50 rounded-lg overflow-hidden">
+          <div class="timeline-bar absolute top-0 h-full rounded-lg" style="left: 25%; width: 37.5%;"></div>
+        </div>
+      </div>
+
+      <!-- Module 4: weeks 4-8 -->
+      <div class="flex items-center gap-4">
+        <div class="w-36 md:w-44 text-right shrink-0">
+          <p class="text-white font-semibold text-sm">SEO</p>
+          <p class="text-gray-600 text-xs">Week 4-8</p>
+        </div>
+        <div class="flex-1 relative h-10 bg-dark-50 rounded-lg overflow-hidden">
+          <div class="timeline-bar absolute top-0 h-full rounded-lg" style="left: 37.5%; width: 62.5%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-gray-500 text-sm text-center mt-8">Модули перекрываются &mdash; полная инфраструктура за 8 недель, не 14</p>
+  </section>
+
+  <!-- УСЛОВИЯ -->
+  <section class="max-w-4xl mx-auto px-6 py-20">
+    <div class="fade-in">
+      <p class="text-accent-500 font-semibold tracking-widest uppercase text-xs mb-4">Terms</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-12">Условия</h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+      <div class="fade-in">
+        <h3 class="text-lg font-semibold text-white mb-4">Оплата</h3>
+        <ul class="space-y-3 text-gray-400 text-sm leading-relaxed">
+          <li class="flex gap-3"><span class="text-accent-500 shrink-0 mt-1">&#8226;</span> 50% предоплата, 50% по завершении каждого модуля</li>
+          <li class="flex gap-3"><span class="text-accent-500 shrink-0 mt-1">&#8226;</span> Ретейнер &mdash; помесячно, начинается после сдачи модуля</li>
+          <li class="flex gap-3"><span class="text-accent-500 shrink-0 mt-1">&#8226;</span> Отмена ретейнера: уведомление за 30 дней</li>
+          <li class="flex gap-3"><span class="text-accent-500 shrink-0 mt-1">&#8226;</span> API costs (OpenAI, Apify и т.д.) &mdash; за счёт клиента (~$50-100/мес)</li>
+        </ul>
+      </div>
+
+      <div class="fade-in">
+        <h3 class="text-lg font-semibold text-white mb-4">Что нужно от вас</h3>
+        <ul class="space-y-3 text-gray-400 text-sm leading-relaxed">
+          <li class="flex gap-3"><span class="text-accent-500 shrink-0 mt-1">&#8226;</span> Доступ к CRM и аналитике</li>
+          <li class="flex gap-3"><span class="text-accent-500 shrink-0 mt-1">&#8226;</span> Контент-план и материалы менторов (записи вебинаров)</li>
+          <li class="flex gap-3"><span class="text-accent-500 shrink-0 mt-1">&#8226;</span> Доступ к Telegram боту</li>
+          <li class="flex gap-3"><span class="text-accent-500 shrink-0 mt-1">&#8226;</span> Контакт технического специалиста (Влад)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRACKING -->
+  <section class="max-w-4xl mx-auto px-6 py-16">
+    <div class="fade-in bg-dark-50 border border-gray-800/50 rounded-2xl p-8 md:p-10">
+      <h3 class="text-lg font-semibold text-white mb-6">Прозрачность и отслеживание</h3>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div class="flex gap-3 items-start">
+          <div class="w-8 h-8 rounded-lg bg-accent-500/10 flex items-center justify-center text-accent-400 text-sm shrink-0">N</div>
+          <div>
+            <p class="text-white text-sm font-medium">Notion workspace</p>
+            <p class="text-gray-500 text-xs">Канбан-доска проекта</p>
+          </div>
+        </div>
+        <div class="flex gap-3 items-start">
+          <div class="w-8 h-8 rounded-lg bg-accent-500/10 flex items-center justify-center text-accent-400 text-sm shrink-0">W</div>
+          <div>
+            <p class="text-white text-sm font-medium">Еженедельные отчёты</p>
+            <p class="text-gray-500 text-xs">Прогресс и метрики</p>
+          </div>
+        </div>
+        <div class="flex gap-3 items-start">
+          <div class="w-8 h-8 rounded-lg bg-accent-500/10 flex items-center justify-center text-accent-400 text-sm shrink-0">T</div>
+          <div>
+            <p class="text-white text-sm font-medium">Telegram чат</p>
+            <p class="text-gray-500 text-xs">Оперативные вопросы</p>
+          </div>
+        </div>
+        <div class="flex gap-3 items-start">
+          <div class="w-8 h-8 rounded-lg bg-accent-500/10 flex items-center justify-center text-accent-400 text-sm shrink-0">R</div>
+          <div>
+            <p class="text-white text-sm font-medium">Real-time доступ</p>
+            <p class="text-gray-500 text-xs">Вы видите что делается</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-gray-800/50 py-12 mt-10">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <p class="text-white font-semibold text-lg mb-2">ChangesWithAI</p>
+      <p class="text-gray-500 text-sm mb-1">Контакт: Борис</p>
+      <p class="text-gray-600 text-xs mt-4">Предложение действительно 14 дней</p>
+      <div class="w-8 h-px bg-gray-800 mx-auto my-4"></div>
+      <p class="text-gray-700 text-xs">&copy; 2026 ChangesWithAI</p>
+    </div>
+  </footer>
+
+  <script>
+    // Register ScrollTrigger
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Header animation on load
+    gsap.fromTo('#header-content',
+      { opacity: 0, y: 40 },
+      { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out' }
+    );
+
+    // Fade-in elements on scroll
+    ScrollTrigger.batch('.fade-in', {
+      onEnter: (batch) => {
+        gsap.fromTo(batch,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', stagger: 0.15, overwrite: 'auto' }
+        );
+      },
+      once: true,
+      start: 'top 85%',
+    });
+  </script>
+</body>
+</html>
